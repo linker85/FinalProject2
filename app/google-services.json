@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "945128673760",
+    "firebase_url": "https://my-parkimeter.firebaseio.com",
+    "project_id": "my-parkimeter",
+    "storage_bucket": "my-parkimeter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945128673760:android:1c7e2e52e727c5de",
+        "android_client_info": {
+          "package_name": "test.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945128673760-3ucm95dfe1go10afn3j4lk8pt9oidc2p.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "945128673760-qfs0df72o7r9nm3puv30k655nen1ts45.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFAQco4uYfwtibzcSnot8U_fVdD5v4UxM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

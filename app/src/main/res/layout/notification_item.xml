@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        android:background="@drawable/list_selector"
+        android:orientation="horizontal"
+        android:padding="5dip" >
+
+        <!--  ListRow Left sied Thumbnail image -->
+        <LinearLayout android:id="@+id/thumbnail"
+            android:visibility="invisible"
+            android:layout_width="1dip"
+            android:layout_height="50dip"
+            android:orientation="vertical"
+            android:layout_marginRight="15dip">
+        </LinearLayout>
+
+        <!-- Title Of Song-->
+        <TextView
+            android:id="@+id/r_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/thumbnail"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:text="Rihanna Love the way lie"
+            android:textColor="#343434"
+            android:typeface="sans"
+            android:textSize="16dip"
+            android:textStyle="bold"/>
+
+        <!-- Artist Name -->
+        <TextView
+            android:id="@+id/r_item_body"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/r_item_title"
+            android:textColor="#787878"
+            android:textSize="14dip"
+            android:layout_marginTop="1dip"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:text="Just gona stand there and ..." />
+
+        <!-- Rightend Duration -->
+        <TextView
+            android:id="@+id/r_item_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/r_item_title"
+            android:gravity="right"
+            android:text="30/10/2016"
+            android:layout_marginRight="5dip"
+            android:textSize="12dip"
+            android:textColor="#dcdcdc"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>

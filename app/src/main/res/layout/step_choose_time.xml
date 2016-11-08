@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#f1f1f2"
@@ -30,6 +31,54 @@
             android:progress="0"
             android:progressDrawable="@drawable/progressbar"
             android:secondaryProgress="0" />
+
+        <RelativeLayout
+            android:id="@+id/tick_mark_labels_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"/>
+
+        <com.etiennelawlor.discreteslider.library.ui.DiscreteSlider
+            android:id="@+id/discrete_slider1"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:background="@color/grey_100"
+            app:backdropFillColor="@color/grey_200"
+            app:backdropStrokeColor="@color/grey_300"
+            app:backdropStrokeWidth="1dp"
+            app:horizontalBarThickness="4dp"
+            app:tickMarkCount="5"
+            app:tickMarkRadius="8dp"
+            app:position="1"
+            app:thumb="@drawable/thumb"
+            app:progressDrawable="@drawable/transparent_progress_drawable"/>
+
+        <RelativeLayout
+            android:id="@+id/tick_mark_labels_r2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"/>
+
+        <com.etiennelawlor.discreteslider.library.ui.DiscreteSlider
+            android:id="@+id/discrete_slider2"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:background="@color/grey_100"
+            app:backdropFillColor="@color/grey_200"
+            app:backdropStrokeColor="@color/grey_300"
+            app:backdropStrokeWidth="1dp"
+            app:horizontalBarThickness="4dp"
+            app:tickMarkCount="5"
+            app:tickMarkRadius="8dp"
+            app:position="1"
+            app:thumb="@drawable/thumb"
+            app:progressDrawable="@drawable/transparent_progress_drawable"/>
 
         <TextView
             android:id="@+id/total_to_pay"

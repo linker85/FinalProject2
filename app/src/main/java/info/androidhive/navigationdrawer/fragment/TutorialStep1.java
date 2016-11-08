@@ -2,6 +2,7 @@ package info.androidhive.navigationdrawer.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -88,6 +89,7 @@ public class TutorialStep1 extends WizardStep {
         return view;
     }
 
+    private ProgressDialog progressDialog;
     //on ActivityResult method
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == 0) {
@@ -98,12 +100,21 @@ public class TutorialStep1 extends WizardStep {
 
                 Log.d("TAG", "onActivityResult: " + isCheckout);
 
+                progressDialog = new ProgressDialog(getActivity());
+
                 Observable<Success> resultSaveApiObservable = SaveApiRetroFitHelper.
                         Factory.createCheckInOut("581deb6b0f0000702a02daee"); // user
                 resultSaveApiObservable
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Success>() {
+
+                            @Override
+                            public void onStart() {
+                                Log.d(TAG, "onStart: ");
+                                progressDialog.setMessage("Loading...");
+                                progressDialog.show();
+                            }
 
                             @Override
                             public void onCompleted() {
@@ -113,6 +124,14 @@ public class TutorialStep1 extends WizardStep {
                             @Override
                             public void onError(Throwable e) {
                                 Log.d(TAG, "onError: " + e.getMessage());
+                                try {
+                                    if (progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                        progressDialog = null;
+                                    }
+                                } catch(Exception exception) {
+                                    exception.printStackTrace();
+                                }
                             }
 
                             @Override
@@ -137,6 +156,14 @@ public class TutorialStep1 extends WizardStep {
                                 }
                                 editor.commit();
                                 Toast toast = null;
+                                try {
+                                    if (progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                        progressDialog = null;
+                                    }
+                                } catch(Exception exception) {
+                                    exception.printStackTrace();
+                                }
                                 if (!isCheckout) {
                                     toast = Toast.makeText(getActivity(), "Check in was succesful", Toast.LENGTH_LONG);
                                     toast.show();

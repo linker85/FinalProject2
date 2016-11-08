@@ -1,5 +1,6 @@
 package info.androidhive.navigationdrawer.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -137,9 +138,13 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private ProgressDialog progressDialog;
+
     public void doSignIn(View view) {
         boolean isValid = validateEmail() && validatePassword();
         Log.d(TAG, "doSignIn: ");
+        progressDialog = new ProgressDialog(this);
+
         if (isValid) {
             final Intent intent = new Intent(this, MainActivity.class);
 
@@ -150,6 +155,12 @@ public class LoginActivity extends AppCompatActivity {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<List<User>>() {
+                        @Override
+                        public void onStart() {
+                            Log.d(TAG, "onStart: ");
+                            progressDialog.setMessage("Loading...");
+                            progressDialog.show();
+                        }
 
                         @Override
                         public void onCompleted() {
@@ -159,10 +170,19 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onError(Throwable e) {
                             Log.d(TAG, "onError: " + e.getMessage());
+                            try {
+                                if (progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                    progressDialog = null;
+                                }
+                            } catch(Exception exception) {
+                                exception.printStackTrace();
+                            }
                         }
 
                         @Override
                         public void onNext(List<User> users) {
+                            Log.d(TAG, "onNext: ");
                             /// Simulation of getting users from backend + from the database to simulate the registry of users
                             boolean found   = false;
                             String name = "";
@@ -189,8 +209,17 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                             //////////////////////////////////////////////////////////////////////////////////////////////////
+                            try {
+                                if (progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                    progressDialog = null;
+                                }
+                            } catch(Exception exception) {
+                                exception.printStackTrace();
+                            }
                             if (found) {
-                                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                                SharedPreferences sharedPref = getApplicationContext().
+                                        getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
                                 // Get shared preferences from mock-backend
                                 final SharedPreferences.Editor editor = sharedPref.edit();
                                 Log.d(TAG, "email: " + email);
@@ -206,14 +235,29 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                                 found = true;
                                 editor.commit();
+                                try {
+                                    if (progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                        progressDialog = null;
+                                    }
+                                } catch(Exception exception) {
+                                    exception.printStackTrace();
+                                }
                                 startActivity(intent);
                             } else {
                                 errorMessageSignIn.setText("Invalid user or password");
+                                try{
+                                    if (progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                        progressDialog = null;
+                                    }
+                                }catch(Exception exception){
+                                    exception.printStackTrace();
+                                }
                             }
                         }
                     });
         }
     }
-
 
 }

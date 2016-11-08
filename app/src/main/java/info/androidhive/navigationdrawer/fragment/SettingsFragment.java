@@ -1,5 +1,6 @@
 package info.androidhive.navigationdrawer.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -138,6 +139,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    private ProgressDialog progressDialog;
     /**
      * Validating form
      */
@@ -154,12 +156,21 @@ public class SettingsFragment extends Fragment {
             return;
         }
 
+        progressDialog = new ProgressDialog(getActivity());
+
         Observable<Success> resultSaveApiObservable = SaveApiRetroFitHelper.
                 Factory.createSaveUser("581deb6b0f0000702a02daee"); // user
         resultSaveApiObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Success>() {
+
+                    @Override
+                    public void onStart() {
+                        Log.d(TAG, "onStart: ");
+                        progressDialog.setMessage("Loading...");
+                        progressDialog.show();
+                    }
 
                     @Override
                     public void onCompleted() {
@@ -171,6 +182,14 @@ public class SettingsFragment extends Fragment {
                         Log.d(TAG, "onError: " + e.getMessage());
                         settingStatus.setText("Your USER couldn´t be registered.");
                         settingStatus.setVisibility(View.VISIBLE);
+                        try {
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+                        } catch(Exception exception) {
+                            exception.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -231,6 +250,16 @@ public class SettingsFragment extends Fragment {
                             settingStatus.setText(message);
                             settingStatus.setVisibility(View.VISIBLE);
                         }
+
+                        try {
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+                        } catch(Exception exception) {
+                            exception.printStackTrace();
+                        }
+
                     }
                 });
     }

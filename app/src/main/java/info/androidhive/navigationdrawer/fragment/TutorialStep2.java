@@ -1,18 +1,24 @@
 package info.androidhive.navigationdrawer.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.etiennelawlor.discreteslider.library.ui.DiscreteSlider;
+import com.etiennelawlor.discreteslider.library.utilities.DisplayUtility;
 import com.nineoldandroids.animation.ValueAnimator;
 
 import org.codepond.wizardroid.WizardStep;
@@ -41,6 +47,15 @@ public class TutorialStep2 extends WizardStep {
     private TextView snap_bar;
     private RelativeLayout relativeLayout;
 
+    private String[] tickMarkLabels1 = {"0 min", "5 min", "10 min", "15 min", "30 min", "45 min"};
+    private String[] tickMarkLabels2 = {"0 hr", "1 hr", "2 hr", "3 hr", "4 hr", "5 hr", "6 hr", "7 hr", "8 hr"};
+    // region Views
+    DiscreteSlider discreteSlider1;
+    DiscreteSlider discreteSlider2;
+    RelativeLayout tickMarkLabelsRelativeLayout1;
+    RelativeLayout tickMarkLabelsRelativeLayout2;
+    // endregion
+
     private static final int SNAP_MIN = 0;
     private static final int SNAP_MIDDLE = 50;
     private static final int SNAP_MAX = 100;
@@ -67,10 +82,15 @@ public class TutorialStep2 extends WizardStep {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.step_choose_time, container, false);
 
-        volumeControl  = (SeekBar)        v.findViewById(R.id.volume_bar);
-        totalToPay     = (TextView)       v.findViewById(R.id.total_to_pay);
-        snap_bar       = (TextView)       v.findViewById(R.id.snap_bar);
-        relativeLayout = (RelativeLayout) v.findViewById(R.id.parent_step);
+        volumeControl                = (SeekBar)        v.findViewById(R.id.volume_bar);
+        totalToPay                   = (TextView)       v.findViewById(R.id.total_to_pay);
+        snap_bar                     = (TextView)       v.findViewById(R.id.snap_bar);
+        relativeLayout               = (RelativeLayout) v.findViewById(R.id.parent_step);
+
+        discreteSlider1               = (DiscreteSlider) v.findViewById(R.id.discrete_slider1);
+        tickMarkLabelsRelativeLayout1 = (RelativeLayout) v.findViewById(R.id.tick_mark_labels_rl);
+        discreteSlider2               = (DiscreteSlider) v.findViewById(R.id.discrete_slider2);
+        tickMarkLabelsRelativeLayout2 = (RelativeLayout) v.findViewById(R.id.tick_mark_labels_r2);
 
         isExtend = getArguments().getBoolean("isExtend");
 
@@ -102,6 +122,63 @@ public class TutorialStep2 extends WizardStep {
         return v;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        discreteSlider1.setTickMarkCount(6);
+        discreteSlider1.setPosition(0);
+        discreteSlider2.setTickMarkCount(6);
+        discreteSlider2.setPosition(0);
+        // Detect when slider position changes
+        discreteSlider1.setOnDiscreteSliderChangeListener(new DiscreteSlider.OnDiscreteSliderChangeListener() {
+            @Override
+            public void onPositionChanged(int position) {
+                int childCount = tickMarkLabelsRelativeLayout1.getChildCount();
+                for (int i= 0; i<childCount; i++) {
+                    TextView tv = (TextView) tickMarkLabelsRelativeLayout1.getChildAt(i);
+                    if (i == position)
+                        tv.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    else
+                        tv.setTextColor(getResources().getColor(R.color.grey_400));
+                }
+                Log.d("TAG", "onPositionChanged: " + tickMarkLabels1[position]);
+            }
+        });
+
+        discreteSlider2.setOnDiscreteSliderChangeListener(new DiscreteSlider.OnDiscreteSliderChangeListener() {
+            @Override
+            public void onPositionChanged(int position) {
+                int childCount = tickMarkLabelsRelativeLayout2.getChildCount();
+                for (int i= 0; i<childCount; i++) {
+                    TextView tv = (TextView) tickMarkLabelsRelativeLayout2.getChildAt(i);
+                    if (i == position)
+                        tv.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    else
+                        tv.setTextColor(getResources().getColor(R.color.grey_400));
+                }
+                Log.d("TAG", "onPositionChanged: " + tickMarkLabels2[position]);
+            }
+        });
+
+        tickMarkLabelsRelativeLayout1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                tickMarkLabelsRelativeLayout1.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                addTickMarkTextLabels1();
+            }
+        });
+
+        tickMarkLabelsRelativeLayout2.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                tickMarkLabelsRelativeLayout2.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                addTickMarkTextLabels2();
+            }
+        });
+    }
+
     private void setVolumeControlListener() {
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChanged = 0;
@@ -115,6 +192,7 @@ public class TutorialStep2 extends WizardStep {
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
 
+            private ProgressDialog progressDialog;
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 double costPerMinutes = 1.5;
@@ -136,6 +214,8 @@ public class TutorialStep2 extends WizardStep {
                     }
                 }
 
+                progressDialog = new ProgressDialog(getActivity());
+
                 Snackbar snackbar = Snackbar
                         .make(relativeLayout, "Do you accept?", Snackbar.LENGTH_LONG)
                         .setAction("Yes", new View.OnClickListener() {
@@ -147,6 +227,12 @@ public class TutorialStep2 extends WizardStep {
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(new Subscriber<Success>() {
+                                            @Override
+                                            public void onStart() {
+                                                Log.d(TAG, "onStart: ");
+                                                progressDialog.setMessage("Loading...");
+                                                progressDialog.show();
+                                            }
 
                                             @Override
                                             public void onCompleted() {
@@ -216,5 +302,90 @@ public class TutorialStep2 extends WizardStep {
         });
         anim.start();
     }
+
+    // region Helper Methods
+
+    private void addTickMarkTextLabels1(){
+        int tickMarkCount = discreteSlider1.getTickMarkCount();
+        float tickMarkRadius = discreteSlider1.getTickMarkRadius();
+        int width = tickMarkLabelsRelativeLayout1.getMeasuredWidth();
+
+        int discreteSliderBackdropLeftMargin = DisplayUtility.dp2px(getContext(), 32);
+        int discreteSliderBackdropRightMargin = DisplayUtility.dp2px(getContext(), 32);
+        float firstTickMarkRadius = tickMarkRadius;
+        float lastTickMarkRadius  = tickMarkRadius;
+        int interval = (width - (discreteSliderBackdropLeftMargin+discreteSliderBackdropRightMargin) - ((int)(firstTickMarkRadius+lastTickMarkRadius)) )
+                / (tickMarkCount-1);
+
+        int tickMarkLabelWidth = DisplayUtility.dp2px(getContext(), 40);
+
+        for(int i=0; i<tickMarkCount; i++) {
+            TextView tv = new TextView(getContext());
+
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                    tickMarkLabelWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            tv.setText(tickMarkLabels1[i]);
+            tv.setGravity(Gravity.CENTER);
+            if(i== discreteSlider1.getPosition())
+                tv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            else
+                tv.setTextColor(getResources().getColor(R.color.grey_400));
+
+//                    tv.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
+
+            int left = discreteSliderBackdropLeftMargin + (int)firstTickMarkRadius + (i * interval) - (tickMarkLabelWidth/2);
+
+            layoutParams.setMargins(left,
+                    0,
+                    0,
+                    0);
+            tv.setLayoutParams(layoutParams);
+
+            tickMarkLabelsRelativeLayout1.addView(tv);
+        }
+    }
+
+    private void addTickMarkTextLabels2(){
+        int tickMarkCount = discreteSlider2.getTickMarkCount();
+        float tickMarkRadius = discreteSlider2.getTickMarkRadius();
+        int width = tickMarkLabelsRelativeLayout2.getMeasuredWidth();
+
+        int discreteSliderBackdropLeftMargin = DisplayUtility.dp2px(getContext(), 32);
+        int discreteSliderBackdropRightMargin = DisplayUtility.dp2px(getContext(), 32);
+        float firstTickMarkRadius = tickMarkRadius;
+        float lastTickMarkRadius  = tickMarkRadius;
+        int interval = (width - (discreteSliderBackdropLeftMargin+discreteSliderBackdropRightMargin) - ((int)(firstTickMarkRadius+lastTickMarkRadius)) )
+                / (tickMarkCount-1);
+
+        int tickMarkLabelWidth = DisplayUtility.dp2px(getContext(), 40);
+
+        for(int i=0; i<tickMarkCount; i++) {
+            TextView tv = new TextView(getContext());
+
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                    tickMarkLabelWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            tv.setText(tickMarkLabels2[i]);
+            tv.setGravity(Gravity.CENTER);
+            if(i== discreteSlider2.getPosition())
+                tv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            else
+                tv.setTextColor(getResources().getColor(R.color.grey_400));
+
+//                    tv.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
+
+            int left = discreteSliderBackdropLeftMargin + (int)firstTickMarkRadius + (i * interval) - (tickMarkLabelWidth/2);
+
+            layoutParams.setMargins(left,
+                    0,
+                    0,
+                    0);
+            tv.setLayoutParams(layoutParams);
+
+            tickMarkLabelsRelativeLayout2.addView(tv);
+        }
+    }
+    // endregion
 
 }

@@ -1,5 +1,6 @@
 package info.androidhive.navigationdrawer.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,11 +27,16 @@ public class MoreTimeActivity extends AppCompatActivity {
 
     private static final String TAG = "MoreTimeActivityTAG_";
     private Handler mHandler;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_time);
+
+        progressDialog = new ProgressDialog(this);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("Extend time ");
@@ -44,6 +50,12 @@ public class MoreTimeActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CheckinMock>() {
+                    @Override
+                    public void onStart() {
+                        Log.d(TAG, "onStart: ");
+                        progressDialog.setMessage("Loading...");
+                        progressDialog.show();
+                    }
 
                     @Override
                     public void onCompleted() {
@@ -53,6 +65,14 @@ public class MoreTimeActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, "onError: " + e.getMessage());
+                        try {
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+                        } catch(Exception exception) {
+                            exception.printStackTrace();
+                        }
                         loadStep2Fragment(false);
                     }
 
@@ -73,6 +93,14 @@ public class MoreTimeActivity extends AppCompatActivity {
                         }
                         /////////////////////////////////////////////////////////////////////////////
                         isExtend = (result.getResult() == 1);
+                        try {
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+                        } catch(Exception exception) {
+                            exception.printStackTrace();
+                        }
                         loadStep2Fragment(isExtend);
                     }
                 });

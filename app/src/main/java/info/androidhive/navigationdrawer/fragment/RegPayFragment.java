@@ -1,5 +1,6 @@
 package info.androidhive.navigationdrawer.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -185,11 +186,14 @@ public class RegPayFragment extends Fragment {
         ///////////////////////////////////////////////////////////////////////
     }
 
-        /**
-         * Validating form
-         */
+    private ProgressDialog progressDialog;
+    /**
+     * Validating form
+     */
     private void submitForm() {
         boolean exito = false;
+
+        progressDialog = new ProgressDialog(getActivity());
 
         exito = !validateCard();
         Log.d("TAG", "!validateCard: " + exito);
@@ -217,6 +221,12 @@ public class RegPayFragment extends Fragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Success>() {
+                    @Override
+                    public void onStart() {
+                        Log.d(TAG, "onStart: ");
+                        progressDialog.setMessage("Loading...");
+                        progressDialog.show();
+                    }
 
                     @Override
                     public void onCompleted() {
@@ -228,6 +238,14 @@ public class RegPayFragment extends Fragment {
                         Log.d(TAG, "onError: " + e.getMessage());
                         payStatus.setText("Your card couldn´t be registered.");
                         payStatus.setVisibility(View.VISIBLE);
+                        try {
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+                        } catch(Exception exception) {
+                            exception.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -267,6 +285,14 @@ public class RegPayFragment extends Fragment {
                         } else {
                             payStatus.setText("Your card couldn´t be registered.");
                             payStatus.setVisibility(View.VISIBLE);
+                        }
+                        try {
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+                        } catch(Exception exception) {
+                            exception.printStackTrace();
                         }
                     }
                 });

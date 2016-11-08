@@ -69,4 +69,7 @@ dependencies {
 
     // play-services-analytics is only needed when using 8.1.0 or older.
     // compile 'com.google.android.gms:play-services-analytics:+'
+
+    // Discrete slider
+    compile 'com.github.lawloretienne:discreteslider:0.0.9'
 }

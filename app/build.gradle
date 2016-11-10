@@ -72,4 +72,6 @@ dependencies {
 
     // Discrete slider
     compile 'com.github.lawloretienne:discreteslider:0.0.9'
+
+    compile 'com.google.android.gms:play-services-maps:+'
 }

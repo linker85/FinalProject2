@@ -1,13 +1,23 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="info.androidhive.navigationdrawer.fragment.NotificationsFragment">
 
-    <android.support.v7.widget.RecyclerView
+    <!--<android.support.v7.widget.RecyclerView
         android:id="@+id/a_notifications_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@drawable/list_selector"/>
+        android:listSelector="@drawable/list_selector"/>-->
+    <Button
+        android:id="@+id/addMarker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-</FrameLayout>
+
+</LinearLayout>

@@ -5,19 +5,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.Notification;
 import info.androidhive.navigationdrawer.other.NotificationsAdapter;
-import info.androidhive.navigationdrawer.other.SimpleDecorator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,13 +83,17 @@ public class NotificationsFragment extends Fragment {
 
     }
 
+    private GoogleMap mMap;
+    MapView mMapView;
+    private Button button;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_notifications, container, false);
         // 1. get a reference to recyclerView
-        notificationRecyclerView = (RecyclerView) view.findViewById(R.id.a_notifications_recycler);
+        /*notificationRecyclerView = (RecyclerView) view.findViewById(R.id.a_notifications_recycler);
         // 2. set layoutManger
         notificationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         // 3. Get data from database
@@ -106,7 +117,42 @@ public class NotificationsFragment extends Fragment {
         notificationRecyclerView.setItemAnimator(new DefaultItemAnimator());
         notificationRecyclerView.addItemDecoration(new SimpleDecorator(getActivity(), LinearLayoutManager.VERTICAL));
         // 5. notify changes
-        notificationAdapter.notifyDataSetChanged();
+        notificationAdapter.notifyDataSetChanged();*/
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        mMapView = (MapView) view.findViewById(R.id.map2);
+        mMapView.onCreate(savedInstanceState);
+
+        mMapView.onResume(); // needed to get the map to display immediately
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        button = (Button) view.findViewById(R.id.addMarker);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // For dropping a marker at a point on the Map
+                LatLng sydney = new LatLng(-34, 151);
+                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+
+                // For zooming automatically to the location of the marker
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        });
+
+        mMapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap gMap) {
+                mMap = gMap;
+            }
+        });
 
         return view;
     }

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +25,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter <NotificationsAda
     private List<Notification> notificationsArrayList;
     private static final String TAG = "NotifAdapterTAG_";
 
-    public NotificationsAdapter(ArrayList<Notification> notificationsArrayList) {
+    public NotificationsAdapter(ArrayList<Notification> notificationsArrayList, EventBus eventBus) {
         this.notificationsArrayList = notificationsArrayList;
+        this.eventBus = eventBus;
     }
+
+    static EventBus eventBus;
 
     @Override
     public NotificationsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -79,7 +84,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter <NotificationsAda
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "onClick: ");
+                    Log.d(TAG, "currentPosition: " + myNotification.getCoordinates());
+                    eventBus.post(new UpdateMapEvent(myNotification.getCoordinates()));
+                    //EventBus.getDefault().post(new UpdateMapEvent(textViewTitle.getText().toString()));
                 }
             });
         }

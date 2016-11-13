@@ -5,26 +5,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.Notification;
 import info.androidhive.navigationdrawer.other.NotificationsAdapter;
+import info.androidhive.navigationdrawer.other.UpdateMapEvent2;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +37,7 @@ import info.androidhive.navigationdrawer.other.NotificationsAdapter;
  */
 public class NotificationsFragment extends Fragment {
 
+    private static final String TAG = "NotifiFragmentTAG_";
     private RecyclerView notificationRecyclerView;
     private ArrayList<Notification> notificationArrayList;
     private NotificationsAdapter notificationAdapter;
@@ -48,6 +50,8 @@ public class NotificationsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EventBus eventBus = EventBus.getDefault();
 
     private OnFragmentInteractionListener mListener;
 
@@ -84,83 +88,63 @@ public class NotificationsFragment extends Fragment {
     }
 
     private GoogleMap mMap;
-    MapView mMapView;
+    private MapView mMapView;
     private Button button;
+
+    // invoked by EventBus
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(final UpdateMapEvent2 event) {
+        // Do something!
+        Log.d(TAG, "onEventMainThreadUp: " + event.coordinates);
+
+        final int orientation = getResources().getConfiguration().orientation;
+        if (orientation == 1) { // Portrait
+        } else {
+            // Landscape
+            MyMapFragment fragmentMap = new MyMapFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("coordinates", event.coordinates);
+            fragmentMap.setArguments(bundle);
+
+            FragmentTransaction mft = getActivity().getSupportFragmentManager().beginTransaction();
+            mft.replace(R.id.flDetailMap, fragmentMap);
+            mft.addToBackStack(null);
+            mft.commit();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_notifications, container, false);
-        // 1. get a reference to recyclerView
-        /*notificationRecyclerView = (RecyclerView) view.findViewById(R.id.a_notifications_recycler);
-        // 2. set layoutManger
-        notificationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        // 3. Get data from database
-        notificationArrayList = new ArrayList<>();
-        notificationArrayList.add(new Notification("title09", "body1", "30/10/2016"));
-        notificationArrayList.add(new Notification("title10", "body2", "30/10/2016"));
-        notificationArrayList.add(new Notification("title11", "body3", "30/10/2016"));
-        notificationArrayList.add(new Notification("title12", "body4", "30/10/2016"));
-        notificationArrayList.add(new Notification("title13", "body5", "30/10/2016"));
-        notificationArrayList.add(new Notification("title14", "body6", "30/10/2016"));
-        notificationArrayList.add(new Notification("title15", "body7", "30/10/2016"));
-        notificationArrayList.add(new Notification("title16", "body8", "30/10/2016"));
-        notificationArrayList.add(new Notification("title17", "body9", "30/10/2016"));
-        notificationArrayList.add(new Notification("title18", "body10", "30/10/2016"));
-        notificationArrayList.add(new Notification("title19", "body11", "30/10/2016"));
-
-        // 4. set adapter
-        notificationAdapter = new NotificationsAdapter(notificationArrayList);
-        notificationRecyclerView.setAdapter(notificationAdapter);
-        notificationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        notificationRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        notificationRecyclerView.addItemDecoration(new SimpleDecorator(getActivity(), LinearLayoutManager.VERTICAL));
-        // 5. notify changes
-        notificationAdapter.notifyDataSetChanged();*/
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-
-        mMapView = (MapView) view.findViewById(R.id.map2);
-        mMapView.onCreate(savedInstanceState);
-
-        mMapView.onResume(); // needed to get the map to display immediately
-
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        button = (Button) view.findViewById(R.id.addMarker);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
-                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            }
-        });
-
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap gMap) {
-                mMap = gMap;
-            }
-        });
-
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "onViewCreated: ");
 
+        //If landscape replace with fragment
+        NotificationsListFragment fragmentItem = new NotificationsListFragment();
+        fragmentItem.setArguments(new Bundle());
+
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.flDetailContainer, fragmentItem);
+        ft.commit();
+
+        final int orientation = getResources().getConfiguration().orientation;
+        if (orientation == 1) { // Portrait
+        } else {
+            // Landscape
+            MyMapFragment fragmentMap = new MyMapFragment();
+            FragmentTransaction mft = getActivity().getSupportFragmentManager().beginTransaction();
+            mft.replace(R.id.flDetailMap, fragmentMap);
+            mft.commit();
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -173,6 +157,7 @@ public class NotificationsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        eventBus.register(this);
 //        if (context instanceof OnFragmentInteractionListener) {
 //            mListener = (OnFragmentInteractionListener) context;
 //        } else {
@@ -183,6 +168,7 @@ public class NotificationsFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        eventBus.unregister(this);
         super.onDetach();
         mListener = null;
     }
@@ -201,4 +187,5 @@ public class NotificationsFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

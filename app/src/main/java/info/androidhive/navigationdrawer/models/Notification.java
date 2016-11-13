@@ -12,6 +12,7 @@ public class Notification extends SugarRecord {
     private String date;
     private String email;
     private int    remaining;
+    private String coordinates;
 
     public Notification() {
     }
@@ -20,6 +21,13 @@ public class Notification extends SugarRecord {
         this.title = title;
         this.body = body;
         this.date = date;
+    }
+
+    public Notification(String title, String body, String date, String coordinates) {
+        this.title       = title;
+        this.body        = body;
+        this.date        = date;
+        this.coordinates = coordinates;
     }
 
     public String getTitle() {
@@ -60,5 +68,13 @@ public class Notification extends SugarRecord {
 
     public void setRemaining(int remaining) {
         this.remaining = remaining;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 }

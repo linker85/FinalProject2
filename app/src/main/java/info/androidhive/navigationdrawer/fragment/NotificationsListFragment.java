@@ -203,11 +203,11 @@ public class NotificationsListFragment extends Fragment {
 
         @Override
         protected Void doInBackground(String... params) {
-            /*notificationArrayList = Notification.findWithQuery(Notification.class,
-                    "SELECT * FROM NOTIFICATION");*/
-
             notificationArrayList = Notification.findWithQuery(Notification.class,
-                    "SELECT * FROM NOTIFICATION WHERE EMAIL='" + params[0] +"' AND DATE_S BETWEEN '" + params[1] + "' AND '" + params[2] + "'");
+                    "SELECT * FROM NOTIFICATION");
+
+            /*notificationArrayList = Notification.findWithQuery(Notification.class,
+                    "SELECT * FROM NOTIFICATION WHERE EMAIL='" + params[0] +"' AND DATE_S BETWEEN '" + params[1] + "' AND '" + params[2] + "'");*/
 
             return null;
         }

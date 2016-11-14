@@ -6,13 +6,6 @@
     android:id="@+id/mymapFragment"
     tools:context="info.androidhive.navigationdrawer.fragment.MyMapFragment">
 
-    <Button
-        android:id="@+id/addMarker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add marker"/>
-
-
     <com.google.android.gms.maps.MapView
         android:id="@+id/map2"
         android:layout_width="match_parent"

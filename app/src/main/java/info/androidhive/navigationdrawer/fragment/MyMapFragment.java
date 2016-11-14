@@ -51,7 +51,7 @@ public class MyMapFragment extends Fragment {
 
         final int orientation = getResources().getConfiguration().orientation;
 
-        if (orientation == 2) {
+        //if (orientation == 2) {
             // Obtain the SupportMapFragment and get notified when the map is ready to be used.
             mMapView = (MapView) view.findViewById(R.id.map2);
 
@@ -94,6 +94,6 @@ public class MyMapFragment extends Fragment {
                     }
                 });
             }
-        }
+        //}
     }
 }

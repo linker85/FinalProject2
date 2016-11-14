@@ -1,6 +1,7 @@
 package info.androidhive.navigationdrawer.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 
 import info.androidhive.navigationdrawer.R;
+import info.androidhive.navigationdrawer.activity.MapActivity;
 import info.androidhive.navigationdrawer.models.Notification;
 import info.androidhive.navigationdrawer.other.NotificationsAdapter;
 import info.androidhive.navigationdrawer.other.UpdateMapEvent2;
@@ -95,10 +97,14 @@ public class NotificationsFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(final UpdateMapEvent2 event) {
         // Do something!
-        Log.d(TAG, "onEventMainThreadUp: " + event.coordinates);
+        Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>onEventMainThreadUp: " + event.coordinates);
 
         final int orientation = getResources().getConfiguration().orientation;
         if (orientation == 1) { // Portrait
+            // Landscape
+            Intent intent = new Intent(getActivity(), MapActivity.class);
+            intent.putExtra("coordinates", event.coordinates);
+            startActivity(intent);
         } else {
             // Landscape
             MyMapFragment fragmentMap = new MyMapFragment();

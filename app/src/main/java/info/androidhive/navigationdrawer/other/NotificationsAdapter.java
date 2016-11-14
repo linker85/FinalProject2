@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import info.androidhive.navigationdrawer.R;
@@ -25,7 +24,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter <NotificationsAda
     private List<Notification> notificationsArrayList;
     private static final String TAG = "NotifAdapterTAG_";
 
-    public NotificationsAdapter(ArrayList<Notification> notificationsArrayList, EventBus eventBus) {
+    public NotificationsAdapter(List<Notification> notificationsArrayList, EventBus eventBus) {
         this.notificationsArrayList = notificationsArrayList;
         this.eventBus = eventBus;
     }
@@ -54,7 +53,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter <NotificationsAda
         textViewBody.setText(notification.getBody());
 
         TextView textViewDate = holder.textViewDate;
-        textViewDate.setText(notification.getDate());
+        textViewDate.setText("" + notification.getDateS());
 
         holder.myNotification = notification;
     }

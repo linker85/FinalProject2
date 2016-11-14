@@ -2,6 +2,8 @@ package info.androidhive.navigationdrawer.models;
 
 import com.orm.SugarRecord;
 
+import java.util.Date;
+
 /**
  * Created by linke_000 on 30/10/2016.
  */
@@ -9,7 +11,7 @@ import com.orm.SugarRecord;
 public class Notification extends SugarRecord {
     private String title;
     private String body;
-    private String date;
+    private Date dateS;
     private String email;
     private int    remaining;
     private String coordinates;
@@ -17,16 +19,16 @@ public class Notification extends SugarRecord {
     public Notification() {
     }
 
-    public Notification(String title, String body, String date) {
+    public Notification(String title, String body, Date date) {
         this.title = title;
         this.body = body;
-        this.date = date;
+        this.dateS = date;
     }
 
-    public Notification(String title, String body, String date, String coordinates) {
+    public Notification(String title, String body, Date dateS, String coordinates) {
         this.title       = title;
         this.body        = body;
-        this.date        = date;
+        this.dateS       = dateS;
         this.coordinates = coordinates;
     }
 
@@ -46,12 +48,12 @@ public class Notification extends SugarRecord {
         this.body = body;
     }
 
-    public String getDate() {
-        return date;
+    public Date getDateS() {
+        return dateS;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateS(Date dateS) {
+        this.dateS = dateS;
     }
 
     public String getEmail() {
@@ -76,5 +78,17 @@ public class Notification extends SugarRecord {
 
     public void setCoordinates(String coordinates) {
         this.coordinates = coordinates;
+    }
+
+    @Override
+    public String toString() {
+        return "Notification{" +
+                "title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", dateS='" + dateS + '\'' +
+                ", email='" + email + '\'' +
+                ", remaining=" + remaining +
+                ", coordinates='" + coordinates + '\'' +
+                '}';
     }
 }

@@ -13,8 +13,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.AboutUsActivity"
@@ -32,12 +32,15 @@
         </activity>
         <activity android:name=".activity.SignUpActivity" />
 
+        <service android:name=".service.NotificationsService"
+            android:exported="false"/>
+
         <meta-data
             android:name="DATABASE"
-            android:value="park-meter6.db" />
+            android:value="park-meter11.db" />
         <meta-data
             android:name="VERSION"
-            android:value="6" />
+            android:value="11" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />

@@ -11,7 +11,7 @@ import java.util.Date;
 public class Notification extends SugarRecord {
     private String title;
     private String body;
-    private Date dateS;
+    private Date   dateS;
     private String email;
     private int    remaining;
     private String coordinates;

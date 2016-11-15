@@ -30,6 +30,7 @@ public class MyApplication extends com.orm.SugarApp {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: MyApplication");
+
         // Logging set to help debug issues, remove before releasing your app.
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.DEBUG, OneSignal.LOG_LEVEL.WARN);
 

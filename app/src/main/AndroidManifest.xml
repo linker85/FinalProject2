@@ -3,6 +3,8 @@
     package="info.androidhive.navigationdrawer">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
     <application
         android:name=".activity.MyApplication"
@@ -52,7 +54,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activity.MapActivity"></activity>
+        <activity android:name=".activity.MapActivity" />
+
     </application>
 
 </manifest>

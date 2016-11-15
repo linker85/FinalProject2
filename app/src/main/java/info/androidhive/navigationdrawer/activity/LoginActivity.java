@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,9 @@ public class LoginActivity extends AppCompatActivity {
     private String          defaultValue;
     private CheckBox        rememberMe;
     private TextInputLayout inputLayoutMail, inputLayoutPassword;
+
+    private ConnectivityManager connectivityManager;
+    private boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

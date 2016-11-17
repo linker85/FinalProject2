@@ -166,18 +166,18 @@ public class MainActivity extends AppCompatActivity {
         //txtWebsite.setText("www.androidhive.info");
 
         // loading header background image
-        Glide.with(this).load(urlNavHeaderBg)
+        /*Glide.with(this).load(urlNavHeaderBg)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgNavHeaderBg);
+                .into(imgNavHeaderBg);*/
 
         // Loading profile image
-        Glide.with(this).load(urlProfileImg)
+        /*Glide.with(this).load(urlProfileImg)
                 .crossFade()
                 .thumbnail(0.5f)
                 .bitmapTransform(new CircleTransform(this))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgProfile);
+                .into(imgProfile);*/
 
         // showing dot next to notifications label
         navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);

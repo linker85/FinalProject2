@@ -13,6 +13,7 @@ import android.widget.Button;
 import org.codepond.wizardroid.WizardFlow;
 import org.codepond.wizardroid.WizardFragment;
 import org.codepond.wizardroid.persistence.ContextVariable;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import info.androidhive.navigationdrawer.R;
@@ -39,6 +40,7 @@ public class HomeFragment extends WizardFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     // This method will be called when a HelloWorldEvent is posted

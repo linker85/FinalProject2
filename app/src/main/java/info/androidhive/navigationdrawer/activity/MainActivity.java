@@ -18,12 +18,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.stetho.Stetho;
 import com.onesignal.OneSignal;
 
@@ -35,7 +31,6 @@ import info.androidhive.navigationdrawer.fragment.NotificationsFragment;
 import info.androidhive.navigationdrawer.fragment.RegPayFragment;
 import info.androidhive.navigationdrawer.fragment.SettingsFragment;
 import info.androidhive.navigationdrawer.models.CheckinMock;
-import info.androidhive.navigationdrawer.other.CircleTransform;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private View navHeader;
-    private ImageView imgNavHeaderBg, imgProfile;
+    //private ImageView imgNavHeaderBg, imgProfile;
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
     private FloatingActionButton fab;
 
     // urls to load navigation header background image
     // and profile image
-    private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
-    private static final String urlProfileImg  = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
+    //private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
+    //private static final String urlProfileImg  = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
@@ -80,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: MainActivity");
 
+        // Stetho
         Stetho.initializeWithDefaults(this);
 
+        // One Signal subscription
         OneSignal.setSubscription(true);
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
@@ -119,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
         navHeader = navigationView.getHeaderView(0);
         txtName        = (TextView)  navHeader.findViewById(R.id.name);
         txtWebsite     = (TextView)  navHeader.findViewById(R.id.website);
-        imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
-        imgProfile     = (ImageView) navHeader.findViewById(R.id.img_profile);
+        //imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
+        //imgProfile     = (ImageView) navHeader.findViewById(R.id.img_profile);
 
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
@@ -437,14 +434,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         // show menu only when home fragment is selected
-        if (navItemIndex == 0) {
-            getMenuInflater().inflate(R.menu.main, menu);
-        }
-
-        // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 3) {
-            getMenuInflater().inflate(R.menu.notifications, menu);
-        }
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -471,18 +461,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             drawer.closeDrawers();
             return true;
-        }
-
-        // user is in notifications fragment
-        // and selected 'Mark all as Read'
-        if (id == R.id.action_mark_all_read) {
-            Toast.makeText(getApplicationContext(), "All notifications marked as read!", Toast.LENGTH_LONG).show();
-        }
-
-        // user is in notifications fragment
-        // and selected 'Clear All'
-        if (id == R.id.action_clear_notifications) {
-            Toast.makeText(getApplicationContext(), "Clear all notifications!", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);

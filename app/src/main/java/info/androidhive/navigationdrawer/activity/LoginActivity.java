@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.User;
 import info.androidhive.navigationdrawer.models.UserMock;
@@ -31,28 +32,32 @@ import rx.schedulers.Schedulers;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginTAG_";
-    private TextView        emailSignInTxt;
-    private TextView        passwordSignInTxt;
-    private TextView        errorMessageSignIn;
-    private String          defaultValue;
-    private CheckBox        rememberMe;
-    private TextInputLayout inputLayoutMail, inputLayoutPassword;
-
-    private ConnectivityManager connectivityManager;
-    private boolean connected = false;
+    @BindView(R.id.input_email_sign_in)
+    public TextView        emailSignInTxt;
+    @BindView(R.id.input_password_sign_in)
+    public TextView        passwordSignInTxt;
+    @BindView(R.id.sign_in_layout_error)
+    public TextView        errorMessageSignIn;
+    public String          defaultValue;
+    @BindView(R.id.remember)
+    public CheckBox        rememberMe;
+    @BindView(R.id.input_layout_email_sign_in)
+    public TextInputLayout inputLayoutMail;
+    @BindView(R.id.input_layout_password_sign_in)
+    public TextInputLayout inputLayoutPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        inputLayoutMail      = (TextInputLayout) findViewById(R.id.input_layout_email_sign_in);
+        ButterKnife.bind(this);
+        /*inputLayoutMail      = (TextInputLayout) findViewById(R.id.input_layout_email_sign_in);
         inputLayoutPassword  = (TextInputLayout) findViewById(R.id.input_layout_password_sign_in);
 
         errorMessageSignIn   = (TextView) findViewById(R.id.sign_in_layout_error);
         emailSignInTxt       = (TextView) findViewById(R.id.input_email_sign_in);
         passwordSignInTxt    = (TextView) findViewById(R.id.input_password_sign_in);
-        rememberMe           = (CheckBox) findViewById(R.id.remember);
+        rememberMe           = (CheckBox) findViewById(R.id.remember);*/
 
         emailSignInTxt   .addTextChangedListener(new MyTextWatcherLogin(emailSignInTxt));
         passwordSignInTxt.addTextChangedListener(new MyTextWatcherLogin(passwordSignInTxt));

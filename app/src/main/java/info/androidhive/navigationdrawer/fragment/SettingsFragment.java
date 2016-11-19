@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.activity.LoginActivity;
 import info.androidhive.navigationdrawer.models.Success;
@@ -49,10 +51,22 @@ public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "SettingsFragmentTAG_";
 
-    private EditText inputName, inputEmail, inputPassword;
-    private TextInputLayout inputLayoutName, inputLayoutEmail, inputLayoutPassword;
-    private Button btn_register;
-    private TextView settingStatus;
+    @BindView(R.id.input_name)
+    public EditText inputName;
+    @BindView(R.id.input_email)
+    public EditText inputEmail;
+    @BindView(R.id.input_password)
+    public EditText inputPassword;
+    @BindView(R.id.input_layout_name)
+    public TextInputLayout inputLayoutName;
+    @BindView(R.id.input_layout_email)
+    public TextInputLayout inputLayoutEmail;
+    @BindView(R.id.input_layout_password)
+    public TextInputLayout inputLayoutPassword;
+    @BindView(R.id.btn_register)
+    public Button btn_register;
+    @BindView(R.id.id_settings_status)
+    public TextView settingStatus;
     private boolean isSignUp;
 
     // TODO: Rename and change types of parameters
@@ -95,14 +109,14 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        inputLayoutName     = (TextInputLayout) getView().findViewById(R.id.input_layout_name);
+        /*inputLayoutName     = (TextInputLayout) getView().findViewById(R.id.input_layout_name);
         inputLayoutEmail    = (TextInputLayout) getView().findViewById(R.id.input_layout_email);
         inputLayoutPassword = (TextInputLayout) getView().findViewById(R.id.input_layout_password);
         inputName           = (EditText) getView().findViewById(R.id.input_name);
         inputEmail          = (EditText) getView().findViewById(R.id.input_email);
         inputPassword       = (EditText) getView().findViewById(R.id.input_password);
         btn_register        = (Button) getView().findViewById(R.id.btn_register);
-        settingStatus       = (TextView) getView().findViewById(R.id.id_settings_status);
+        settingStatus       = (TextView) getView().findViewById(R.id.id_settings_status);*/
 
         settingStatus.setVisibility(getView().INVISIBLE);
 
@@ -345,7 +359,8 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        final View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 

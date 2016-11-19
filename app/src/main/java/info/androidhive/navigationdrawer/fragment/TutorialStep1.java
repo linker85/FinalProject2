@@ -23,6 +23,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.CheckinMock;
 import info.androidhive.navigationdrawer.models.Success;
@@ -43,7 +45,8 @@ public class TutorialStep1 extends WizardStep {
 
     static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
     private static final String TAG = "TutorialStep1TAG_";
-    private Button scannerBTN;
+    @BindView(R.id.scanner)
+    public Button scannerBTN;
     /**
      * Tell WizarDroid that these are context variables.
      * These values will be automatically bound to any field annotated with {@link ContextVariable}.
@@ -62,8 +65,9 @@ public class TutorialStep1 extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.step_check_in, container, false);
+        ButterKnife.bind(this, view);
 
-        scannerBTN = (Button) view.findViewById(R.id.scanner);
+        //scannerBTN = (Button) view.findViewById(R.id.scanner);
 
         if (!isCheckout) {
             scannerBTN.setText("Check in");

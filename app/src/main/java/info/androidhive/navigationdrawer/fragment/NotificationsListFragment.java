@@ -27,6 +27,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.Notification;
 import info.androidhive.navigationdrawer.other.NotificationsAdapter;
@@ -40,11 +42,16 @@ import info.androidhive.navigationdrawer.other.UpdateMapEvent2;
 public class NotificationsListFragment extends Fragment {
 
     private static final String TAG = "NotifFragment";
-    private RecyclerView notificationRecyclerView;
+    @BindView(R.id.a_notifications_recycler)
+    public RecyclerView notificationRecyclerView;
     private List<Notification> notificationArrayList;
     private NotificationsAdapter notificationAdapter;
-    private TextView doOpenDate1, doOpenDate2;
-    private FloatingActionButton fab1;
+    @BindView(R.id.initDateTxt)
+    public TextView doOpenDate1;
+    @BindView(R.id.endDateTxt)
+    public TextView doOpenDate2;
+    @BindView(R.id.fab)
+    public FloatingActionButton fab1;
 
     private EventBus eventBus = EventBus.getDefault();
 
@@ -85,7 +92,9 @@ public class NotificationsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_items_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_items_list, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     // These variables will hold the date values later
@@ -141,15 +150,15 @@ public class NotificationsListFragment extends Fragment {
                 }
 
                 Log.d(TAG, "onClickDialogDate: " + endYear + "/" + endMonthS + "/" + endDay);
-                doOpenDate1 = (TextView) getActivity().findViewById(R.id.initDateTxt);
-                doOpenDate2 = (TextView) getActivity().findViewById(R.id.endDateTxt);
+                //doOpenDate1 = (TextView) getActivity().findViewById(R.id.initDateTxt);
+                //doOpenDate2 = (TextView) getActivity().findViewById(R.id.endDateTxt);
                 doOpenDate1.setText(startYear + "-" + startMonthS + "-" + startDayS);
                 doOpenDate2.setText(endYear + "-" + endMonthS + "-" + endDayS);
                 dialog.dismiss();
 
 
                 // 1. get a reference to recyclerView
-                notificationRecyclerView = (RecyclerView) getActivity().findViewById(R.id.a_notifications_recycler);
+                //notificationRecyclerView = (RecyclerView) getActivity().findViewById(R.id.a_notifications_recycler);
                 // 2. set layoutManger
                 notificationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 // 3. Get data from database
@@ -178,7 +187,7 @@ public class NotificationsListFragment extends Fragment {
 
         Log.d(TAG, "onViewCreated: ");
 
-        fab1 = (FloatingActionButton) view.findViewById(R.id.fab);
+        //fab1 = (FloatingActionButton) view.findViewById(R.id.fab);
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import org.codepond.wizardroid.WizardFlow;
 import org.codepond.wizardroid.WizardFragment;
@@ -16,14 +17,20 @@ import org.codepond.wizardroid.persistence.ContextVariable;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.other.UpdateStepperEvent;
 
 public class HomeFragment extends WizardFragment {
 
     private static final String TAG = "HomeFragmentTAG_";
-    private Button nextButton;
-    private Button previousButton;
+    @BindView(R.id.wizard_next_button)
+    public Button nextButton;
+    @BindView(R.id.wizard_previous_button)
+    public Button previousButton;
+    @BindView(R.id.wizard_button_bar)
+    public LinearLayout bar;
     /**
      * Tell WizarDroid that these are context variables.
      * These values will be automatically bound to any field annotated with {@link ContextVariable}.
@@ -56,10 +63,12 @@ public class HomeFragment extends WizardFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
-        nextButton = (Button) view.findViewById(R.id.wizard_next_button);
+        ButterKnife.bind(this, view);
+        //nextButton = (Button) view.findViewById(R.id.wizard_next_button);
 
         if (isCheckout) {
-            view.findViewById(R.id.wizard_button_bar).setVisibility(View.INVISIBLE);
+            //bar = (LinearLayout) view.findViewById(R.id.wizard_button_bar);
+            bar.setVisibility(View.INVISIBLE);
         }
 
         nextButton.setEnabled(false);
@@ -70,7 +79,7 @@ public class HomeFragment extends WizardFragment {
                 updateWizardControls();
             }
         });
-        previousButton = (Button) view.findViewById(R.id.wizard_previous_button);
+        //previousButton = (Button) view.findViewById(R.id.wizard_previous_button);
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +20,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.greenrobot.eventbus.EventBus;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 
 /**
@@ -30,8 +31,8 @@ public class MyMapFragment extends Fragment {
 
     private static final String TAG = "MyMapFragmentTAG_";
     private GoogleMap mMap;
-    private MapView mMapView;
-    private Button button;
+    @BindView(R.id.map2)
+    public MapView mMapView;
     private EventBus eventBus = EventBus.getDefault();
 
     public MyMapFragment() {
@@ -42,18 +43,20 @@ public class MyMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        final View view = inflater.inflate(R.layout.fragment_map, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final int orientation = getResources().getConfiguration().orientation;
+        //final int orientation = getResources().getConfiguration().orientation;
 
         //if (orientation == 2) {
             // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-            mMapView = (MapView) view.findViewById(R.id.map2);
+            //mMapView = (MapView) view.findViewById(R.id.map2);
 
             if (mMapView != null) {
                 mMapView.onCreate(savedInstanceState);

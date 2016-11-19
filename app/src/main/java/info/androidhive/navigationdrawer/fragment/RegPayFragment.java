@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.RegisteredMock;
 import info.androidhive.navigationdrawer.models.Success;
@@ -49,10 +51,26 @@ public class RegPayFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG        = "RegPayFragmentTAG_";
 
-    private EditText inputCard, inputMM, inputYYYY, inputCVV;
-    private TextInputLayout inputLayoutCard, inputLayoutMM, inputLayoutYYYY, inputLayoutCVV;
-    private Button btn_register_card;
-    private TextView payStatus;
+    @BindView(R.id.input_card)
+    public EditText inputCard;
+    @BindView(R.id.input_mm)
+    public EditText inputMM;
+    @BindView(R.id.input_yyyy)
+    public EditText inputYYYY;
+    @BindView(R.id.input_cvv)
+    public EditText inputCVV;
+    @BindView(R.id.input_layout_card)
+    public TextInputLayout inputLayoutCard;
+    @BindView(R.id.input_layout_mm)
+    public TextInputLayout inputLayoutMM;
+    @BindView(R.id.input_layout_yyyy)
+    public TextInputLayout inputLayoutYYYY;
+    @BindView(R.id.input_layout_cvv)
+    public TextInputLayout inputLayoutCVV;
+    @BindView(R.id.btn_register_card)
+    public Button btn_register_card;
+    @BindView(R.id.id_pay_status)
+    public TextView payStatus;
 
     private boolean isAlreadyRegistered = false;
 
@@ -97,13 +115,15 @@ public class RegPayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_regpay, container, false);
+        final View view = inflater.inflate(R.layout.fragment_regpay, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        inputLayoutCard   = (TextInputLayout) getView().findViewById(R.id.input_layout_card);
+        /*inputLayoutCard   = (TextInputLayout) getView().findViewById(R.id.input_layout_card);
         inputCard         = (EditText) getView().findViewById(R.id.input_card);
         inputLayoutMM     = (TextInputLayout) getView().findViewById(R.id.input_layout_mm);
         inputMM           = (EditText) getView().findViewById(R.id.input_mm);
@@ -112,7 +132,7 @@ public class RegPayFragment extends Fragment {
         inputLayoutCVV    = (TextInputLayout) getView().findViewById(R.id.input_layout_cvv);
         inputCVV          = (EditText) getView().findViewById(R.id.input_cvv);
         btn_register_card = (Button) getView().findViewById(R.id.btn_register_card);
-        payStatus         = (TextView) getView().findViewById(R.id.id_pay_status);
+        payStatus         = (TextView) getView().findViewById(R.id.id_pay_status);*/
 
         inputCard.addTextChangedListener(new RegPayFragment.MyTextWatcher(inputCard));
 

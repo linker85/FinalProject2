@@ -25,6 +25,8 @@ import org.codepond.wizardroid.persistence.ContextVariable;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.CheckinMock;
 import info.androidhive.navigationdrawer.models.Success;
@@ -41,10 +43,15 @@ import rx.schedulers.Schedulers;
 public class TutorialStep2 extends WizardStep {
 
     private static final String TAG = "Step2TAG_";
-    private TextView totalToPay;
-    private TextView snap_bar;
-    private RelativeLayout relativeLayout;
-    private Button   saveTime;
+
+    @BindView(R.id.total_to_pay)
+    public TextView totalToPay;
+    @BindView(R.id.snap_bar)
+    public TextView snap_bar;
+    @BindView(R.id.parent_step)
+    public RelativeLayout relativeLayout;
+    @BindView(R.id.btn_save_time)
+    public Button   saveTime;
 
     private String[] tickMarkLabels1 = {"0 min", "5 min", "10 min", "15 min", "30 min", "45 min"};
     private String[] tickMarkLabels2 = {"0 hr", "1 hr", "2 hr", "3 hr", "4 hr", "5 hr", "6 hr", "7 hr", "8 hr"};
@@ -52,10 +59,14 @@ public class TutorialStep2 extends WizardStep {
     private double[] costLabels2 = {0, 10, 20, 30, 40, 50, 60, 70, 80};
 
     // region Views
-    DiscreteSlider discreteSlider1;
-    DiscreteSlider discreteSlider2;
-    RelativeLayout tickMarkLabelsRelativeLayout1;
-    RelativeLayout tickMarkLabelsRelativeLayout2;
+    @BindView(R.id.discrete_slider1)
+    public DiscreteSlider discreteSlider1;
+    @BindView(R.id.discrete_slider2)
+    public DiscreteSlider discreteSlider2;
+    @BindView(R.id.tick_mark_labels_rl)
+    public RelativeLayout tickMarkLabelsRelativeLayout1;
+    @BindView(R.id.tick_mark_labels_r2)
+    public RelativeLayout tickMarkLabelsRelativeLayout2;
     // endregion
 
     private static final int SNAP_MIN = 0;
@@ -83,8 +94,9 @@ public class TutorialStep2 extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.step_choose_time, container, false);
+        ButterKnife.bind(this, v);
 
-        totalToPay                   = (TextView)       v.findViewById(R.id.total_to_pay);
+        /*totalToPay                   = (TextView)       v.findViewById(R.id.total_to_pay);
         snap_bar                     = (TextView)       v.findViewById(R.id.snap_bar);
         relativeLayout               = (RelativeLayout) v.findViewById(R.id.parent_step);
         saveTime                     = (Button)         v.findViewById(R.id.btn_save_time);
@@ -92,7 +104,7 @@ public class TutorialStep2 extends WizardStep {
         discreteSlider1               = (DiscreteSlider) v.findViewById(R.id.discrete_slider1);
         tickMarkLabelsRelativeLayout1 = (RelativeLayout) v.findViewById(R.id.tick_mark_labels_rl);
         discreteSlider2               = (DiscreteSlider) v.findViewById(R.id.discrete_slider2);
-        tickMarkLabelsRelativeLayout2 = (RelativeLayout) v.findViewById(R.id.tick_mark_labels_r2);
+        tickMarkLabelsRelativeLayout2 = (RelativeLayout) v.findViewById(R.id.tick_mark_labels_r2);*/
 
         isExtend = getArguments().getBoolean("isExtend");
 

@@ -18,7 +18,9 @@ public class User {
     @SerializedName("name")
     @Expose
     private String name;
-
+    @SerializedName("plate")
+    @Expose
+    private String plate;
     /**
      * 
      * @return
@@ -91,12 +93,22 @@ public class User {
         this.name = name;
     }
 
+    public String getPlate() {
+        return plate;
+    }
+
+    public void setPlate(String plate) {
+        this.plate = plate;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", plate='" + plate + '\'' +
                 '}';
     }
 }

@@ -57,6 +57,8 @@ public class SettingsFragment extends Fragment {
     public EditText inputEmail;
     @BindView(R.id.input_password)
     public EditText inputPassword;
+    @BindView(R.id.input_plate)
+    public EditText inputPlate;
     @BindView(R.id.input_layout_name)
     public TextInputLayout inputLayoutName;
     @BindView(R.id.input_layout_email)
@@ -67,6 +69,8 @@ public class SettingsFragment extends Fragment {
     public Button btn_register;
     @BindView(R.id.id_settings_status)
     public TextView settingStatus;
+    @BindView(R.id.input_layout_plate)
+    public TextInputLayout inputLayoutPlate;
     private boolean isSignUp;
 
     // TODO: Rename and change types of parameters
@@ -127,18 +131,25 @@ public class SettingsFragment extends Fragment {
         if (!isSignUp) {
             SharedPreferences sharedPref = null;
             try {
-                sharedPref   = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-                String email = sharedPref.getString("email", "");
-                String name  = sharedPref.getString("name", "");
+                sharedPref    = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                String email  = sharedPref.getString("email", "");
+                String name   = sharedPref.getString("name", "");
+                String plate  = sharedPref.getString("plate", "");
                 if (email != null) {
                     inputEmail.setText(email);
                 }
                 if (name != null) {
                     inputName.setText(name);
                 }
+                if (plate != null) {
+                    inputPlate.setText(plate);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            inputPlate.addTextChangedListener(new MyTextWatcher(inputPlate));
+        } else {
+            inputLayoutPlate.setVisibility(View.GONE);
         }
 
         inputName    .addTextChangedListener(new MyTextWatcher(inputName));
@@ -168,6 +179,12 @@ public class SettingsFragment extends Fragment {
 
         if (!validatePassword()) {
             return;
+        }
+
+        if (!isSignUp) {
+            if (!validatePlate()) {
+                return;
+            }
         }
 
         progressDialog = new ProgressDialog(getActivity());
@@ -222,6 +239,7 @@ public class SettingsFragment extends Fragment {
                                 userMock.setEmail(inputEmail.getText().toString());
                                 userMock.setPassword(inputPassword.getText().toString());
                                 userMock.setName(inputName.getText().toString());
+                                userMock.setPlate("");
                                 userMock.save();
                                 successBack = true;
                             }
@@ -231,6 +249,7 @@ public class SettingsFragment extends Fragment {
                                 userMock.setEmail(inputEmail.getText().toString());
                                 userMock.setPassword(inputPassword.getText().toString());
                                 userMock.setName(inputName.getText().toString());
+                                userMock.setPlate(inputPlate.getText().toString());
                                 userMock.save();
                                 successBack = true;
                             } else { // Add new user
@@ -238,6 +257,7 @@ public class SettingsFragment extends Fragment {
                                 userMock.setEmail(inputEmail.getText().toString());
                                 userMock.setPassword(inputPassword.getText().toString());
                                 userMock.setName(inputName.getText().toString());
+                                userMock.setPlate(inputPlate.getText().toString());
                                 userMock.save();
                                 successBack = true;
                             }
@@ -257,6 +277,7 @@ public class SettingsFragment extends Fragment {
                                 final SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putString("email", inputEmail.getText().toString());
                                 editor.putString("name", inputName.getText().toString());
+                                editor.putString("plate", inputPlate.getText().toString());
                                 editor.commit();
                                 Toast.makeText(getView().getContext(), "Your user settings have been updated.", Toast.LENGTH_LONG).show();
                             }
@@ -316,6 +337,18 @@ public class SettingsFragment extends Fragment {
         return true;
     }
 
+    private boolean validatePlate() {
+        if (inputPassword.getText().toString().trim().isEmpty()) {
+            inputLayoutPassword.setError(getString(R.string.err_msg_plate));
+            requestFocus(inputPlate);
+            return false;
+        } else {
+            inputLayoutPlate.setErrorEnabled(false);
+        }
+
+        return true;
+    }
+
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -350,6 +383,9 @@ public class SettingsFragment extends Fragment {
                     break;
                 case R.id.input_password:
                     validatePassword();
+                    break;
+                case R.id.input_plate:
+                    validatePlate();
                     break;
             }
         }

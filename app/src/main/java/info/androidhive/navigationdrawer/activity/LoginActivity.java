@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
             final Intent intent = new Intent(this, MainActivity.class);
 
             Observable<List<User>> resultGithubObservable = LoginRetrofitHelper.
-                    Factory.createLogin("581e710d3e0000da02c08e10"); // user
+                    Factory.createLogin("582fe0442600009501f227ea"); // user
 
             resultGithubObservable
                     .subscribeOn(Schedulers.io())
@@ -194,8 +194,9 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "onNext: ");
                             /// Simulation of getting users from backend + from the database to simulate the registry of users
                             boolean found   = false;
-                            String name = "";
-                            String email    = "";
+                            String name  = "";
+                            String email = "";
+                            String plate = "";
                             List<UserMock> userMocksList = UserMock.findWithQuery(UserMock.class, "SELECT * FROM USER_MOCK");
                             if (userMocksList != null && !userMocksList.isEmpty()) {
                                 for (UserMock u : userMocksList) {
@@ -203,6 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                                     user.setEmail(u.getEmail());
                                     user.setPassword(u.getPassword());
                                     user.setName(u.getName());
+                                    user.setPlate(u.getPlate());
                                     users.add(user);
                                 }
                             }
@@ -212,6 +214,7 @@ public class LoginActivity extends AppCompatActivity {
                                     found = true;
                                     name  = user.getName();
                                     email = user.getEmail();
+                                    plate = user.getPlate();
                                     break;
                                 } else {
                                     found = false;
@@ -235,6 +238,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.d(TAG, "name: " + name);
                                 editor.putString("email", email);
                                 editor.putString("name", name);
+                                editor.putString("plate", plate);
                                 if (rememberMe.isChecked()) {
                                     editor.putString("rem", "1");
                                     editor.putString("emailR", emailSignInTxt.getText().toString());

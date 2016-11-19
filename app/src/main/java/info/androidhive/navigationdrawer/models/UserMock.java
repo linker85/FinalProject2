@@ -10,6 +10,7 @@ public class UserMock extends SugarRecord {
     private String email;
     private String password;
     private String name;
+    private String plate;
 
      /**
      *
@@ -65,14 +66,21 @@ public class UserMock extends SugarRecord {
         this.name = name;
     }
 
+    public String getPlate() {
+        return plate;
+    }
+
+    public void setPlate(String plate) {
+        this.plate = plate;
+    }
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
+        return "UserMock{" +
+                "email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", plate='" + plate + '\'' +
                 '}';
     }
 }

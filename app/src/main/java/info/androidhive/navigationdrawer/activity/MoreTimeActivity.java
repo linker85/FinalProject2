@@ -38,6 +38,13 @@ public class MoreTimeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_time);
 
+        // Set current activity
+        SharedPreferences sharedPref = getApplicationContext().
+                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("currentActivity", "moreTime");
+        editor.commit();
+
         progressDialog = new ProgressDialog(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

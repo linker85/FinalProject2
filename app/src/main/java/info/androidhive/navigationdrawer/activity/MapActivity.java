@@ -25,6 +25,14 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Set current activity
+        // Set current activity
+        SharedPreferences sharedPref = getApplicationContext().
+                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("currentActivity", "map");
+        editor.commit();
+
         // Landscape
         MyMapFragment fragmentMap = new MyMapFragment();
 

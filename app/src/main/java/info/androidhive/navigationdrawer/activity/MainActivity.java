@@ -78,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
         // Stetho
         Stetho.initializeWithDefaults(this);
 
+        // Set current activity
+        SharedPreferences sharedPref = getApplicationContext().
+                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("currentActivity", "main");
+        editor.commit();
+
         // One Signal subscription
         OneSignal.setSubscription(true);
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
@@ -346,7 +353,10 @@ public class MainActivity extends AppCompatActivity {
                         // No more notifications
                         OneSignal.setSubscription(false);
                         finish();
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        // clear activity stack
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                         drawer.closeDrawers();
                         break;
                     case R.id.id_more_time:
@@ -458,7 +468,10 @@ public class MainActivity extends AppCompatActivity {
             OneSignal.setSubscription(false);
 
             finish();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            // clear activity stack
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             drawer.closeDrawers();
             return true;
         }

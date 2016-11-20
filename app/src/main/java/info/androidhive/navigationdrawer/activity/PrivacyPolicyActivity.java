@@ -22,6 +22,13 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_policy);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Set current activity
+        SharedPreferences sharedPref = getApplicationContext().
+                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("currentActivity", "privacyPolicy");
+        editor.commit();
     }
 
     @Override

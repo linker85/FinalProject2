@@ -51,13 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        /*inputLayoutMail      = (TextInputLayout) findViewById(R.id.input_layout_email_sign_in);
-        inputLayoutPassword  = (TextInputLayout) findViewById(R.id.input_layout_password_sign_in);
-
-        errorMessageSignIn   = (TextView) findViewById(R.id.sign_in_layout_error);
-        emailSignInTxt       = (TextView) findViewById(R.id.input_email_sign_in);
-        passwordSignInTxt    = (TextView) findViewById(R.id.input_password_sign_in);
-        rememberMe           = (CheckBox) findViewById(R.id.remember);*/
 
         emailSignInTxt   .addTextChangedListener(new MyTextWatcherLogin(emailSignInTxt));
         passwordSignInTxt.addTextChangedListener(new MyTextWatcherLogin(passwordSignInTxt));
@@ -114,6 +107,11 @@ public class LoginActivity extends AppCompatActivity {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
+    }
+
+    public void doForgotPassword(View view) {
+        Intent intent = new Intent(this, ForgotPasswordActivity.class);
+        startActivity(intent);
     }
 
     private class MyTextWatcherLogin implements TextWatcher {

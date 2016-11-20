@@ -233,8 +233,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                     ////////////////////////////////////////////////////////////////////////////
                     bundle.putBoolean("isCheckout", isCheckout);
+                } else if (navItemIndex == 4) {
+                    // 1. Signup, 2. Remember, 3. settings
+                    bundle.putInt("settingsFragment", 3);
                 }
-
                 // update the main content by replacing fragments
                 Fragment fragment = getHomeFragment();
                 if (navItemIndex == 0) {

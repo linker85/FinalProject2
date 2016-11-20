@@ -71,7 +71,7 @@ public class SettingsFragment extends Fragment {
     public TextView settingStatus;
     @BindView(R.id.input_layout_plate)
     public TextInputLayout inputLayoutPlate;
-    private boolean isSignUp;
+    private int settingsFragment;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -113,22 +113,29 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*inputLayoutName     = (TextInputLayout) getView().findViewById(R.id.input_layout_name);
-        inputLayoutEmail    = (TextInputLayout) getView().findViewById(R.id.input_layout_email);
-        inputLayoutPassword = (TextInputLayout) getView().findViewById(R.id.input_layout_password);
-        inputName           = (EditText) getView().findViewById(R.id.input_name);
-        inputEmail          = (EditText) getView().findViewById(R.id.input_email);
-        inputPassword       = (EditText) getView().findViewById(R.id.input_password);
-        btn_register        = (Button) getView().findViewById(R.id.btn_register);
-        settingStatus       = (TextView) getView().findViewById(R.id.id_settings_status);*/
 
         settingStatus.setVisibility(getView().INVISIBLE);
 
         if (getArguments() != null) {
-            isSignUp = getArguments().getBoolean("isSignUp");
+            settingsFragment = getArguments().getInt("settingsFragment");
+        } else {
+            settingsFragment = 3;
         }
 
-        if (!isSignUp) {
+        if (settingsFragment == 1) {
+            // Is signup (option 1)
+            inputLayoutPlate.setVisibility(View.GONE);
+
+            inputName    .addTextChangedListener(new MyTextWatcher(inputName));
+            inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
+        } else if (settingsFragment == 2) {
+            // Is forgot password (option 2)
+            inputLayoutPlate.setVisibility(View.GONE);
+            inputLayoutPassword.setVisibility(View.GONE);
+            inputLayoutName.setVisibility(View.GONE);
+            btn_register.setText("Get new password");
+        } else if (settingsFragment == 3) {
+            // Is settings (option 3)
             SharedPreferences sharedPref = null;
             try {
                 sharedPref    = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
@@ -147,15 +154,12 @@ public class SettingsFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            inputPlate.addTextChangedListener(new MyTextWatcher(inputPlate));
-        } else {
-            inputLayoutPlate.setVisibility(View.GONE);
+            inputPlate   .addTextChangedListener(new MyTextWatcher(inputPlate));
+            inputName    .addTextChangedListener(new MyTextWatcher(inputName));
+            inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
         }
 
-        inputName    .addTextChangedListener(new MyTextWatcher(inputName));
         inputEmail   .addTextChangedListener(new MyTextWatcher(inputEmail));
-        inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
-
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,19 +173,23 @@ public class SettingsFragment extends Fragment {
      * Validating form
      */
     private void submitForm() {
-        if (!validateName()) {
-            return;
+        if (settingsFragment == 1 || settingsFragment == 3) {
+            if (!validateName()) {
+                return;
+            }
         }
 
         if (!validateEmail()) {
             return;
         }
 
-        if (!validatePassword()) {
-            return;
+        if (settingsFragment == 1 || settingsFragment == 3) {
+            if (!validatePassword()) {
+                return;
+            }
         }
 
-        if (!isSignUp) {
+        if (settingsFragment == 3) {
             if (!validatePlate()) {
                 return;
             }
@@ -229,8 +237,8 @@ public class SettingsFragment extends Fragment {
                         boolean successBack = false;
                         String  message     = "Your user couldn´t be registered.";
                         List<UserMock> userMocksList = UserMock.findWithQuery(UserMock.class, "SELECT * FROM USER_MOCK WHERE EMAIL = ?", inputEmail.getText().toString());
-                        if (isSignUp) {
-                            if (userMocksList != null && !userMocksList.isEmpty()) { // Update user
+                        if (settingsFragment == 1) { // Is signup
+                            if (userMocksList != null && !userMocksList.isEmpty()) {
                                 message     = "The email that you are trying to registered is already being used.";
                                 successBack = false;
                             } else {
@@ -243,7 +251,10 @@ public class SettingsFragment extends Fragment {
                                 userMock.save();
                                 successBack = true;
                             }
-                        } else {
+                        } else if (settingsFragment == 2) { // Is remember password
+                            // Email found and new password was send to user
+                            successBack = true;
+                        } else if (settingsFragment == 3) { // Is settings save
                             if (userMocksList != null && !userMocksList.isEmpty()) { // Update user
                                 UserMock userMock = UserMock.findById(UserMock.class, userMocksList.get(0).getId());
                                 userMock.setEmail(inputEmail.getText().toString());
@@ -267,12 +278,14 @@ public class SettingsFragment extends Fragment {
                         if (success.getResult() == 1 && successBack) {
                             settingStatus.setText("");
                             settingStatus.setVisibility(View.INVISIBLE);
-                            if (isSignUp) {
+                            if (settingsFragment == 1) { // Sign up
                                 Toast.makeText(getView().getContext(), "Your user was registered", Toast.LENGTH_LONG).show();
                                 getActivity().finish();
                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                                 startActivity(intent);
-                            } else {
+                            } else if (settingsFragment == 2) { // Remember
+                                Toast.makeText(getView().getContext(), "An email was send with a new temporary password.", Toast.LENGTH_LONG).show();
+                            } else if (settingsFragment == 3)  { // Settings
                                 SharedPreferences sharedPref = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
                                 final SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putString("email", inputEmail.getText().toString());
@@ -338,8 +351,8 @@ public class SettingsFragment extends Fragment {
     }
 
     private boolean validatePlate() {
-        if (inputPassword.getText().toString().trim().isEmpty()) {
-            inputLayoutPassword.setError(getString(R.string.err_msg_plate));
+        if (inputPlate.getText().toString().trim().isEmpty()) {
+            inputLayoutPlate.setError(getString(R.string.err_msg_plate));
             requestFocus(inputPlate);
             return false;
         } else {

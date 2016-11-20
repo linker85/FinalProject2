@@ -11,20 +11,20 @@ import android.view.MenuItem;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.fragment.SettingsFragment;
 
-public class SignUpActivity extends AppCompatActivity {
+public class ForgotPasswordActivity extends AppCompatActivity {
 
-    private static final String TAG = "SignUpActivityTAG_";
+    private static final String TAG = "ForgotPasswordTAG_";
 
     private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_forgot_password);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Sign up");
+        getSupportActionBar().setTitle("Forgot password");
 
         mHandler = new Handler();
 
@@ -49,7 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 // 1. Signup, 2. Remember, 3. settings
-                bundle.putInt("settingsFragment", 1);
+                bundle.putInt("settingsFragment", 2);
 
                 // update the main content by replacing fragments
                 Fragment fragment = new SettingsFragment();
@@ -57,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame_sign_up, fragment, "id_sign_up");
+                fragmentTransaction.replace(R.id.frame_forgot_password, fragment, "id_forgot_password");
                 fragmentTransaction.commitAllowingStateLoss();
             }
         };

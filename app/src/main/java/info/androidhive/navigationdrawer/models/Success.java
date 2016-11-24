@@ -5,26 +5,26 @@ import com.google.gson.annotations.SerializedName;
 
 public class Success {
 
-    @SerializedName("result")
+    @SerializedName("success")
     @Expose
-    private Integer result;
+    private boolean success;
+    @SerializedName("mensaje")
+    @Expose
+    private String mensaje;
 
-    /**
-     *
-     * @return
-     * The result
-     */
-    public Integer getResult() {
-        return result;
+    public boolean isSuccess() {
+        return success;
     }
 
-    /**
-     *
-     * @param result
-     * The result
-     */
-    public void setResult(Integer result) {
-        this.result = result;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
 }

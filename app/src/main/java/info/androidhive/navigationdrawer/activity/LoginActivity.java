@@ -16,13 +16,11 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
+import info.androidhive.navigationdrawer.models.LoginResponse;
 import info.androidhive.navigationdrawer.models.User;
-import info.androidhive.navigationdrawer.models.UserMock;
 import info.androidhive.navigationdrawer.retrofit_helpers.LoginRetrofitHelper;
 import rx.Observable;
 import rx.Subscriber;
@@ -155,13 +153,17 @@ public class LoginActivity extends AppCompatActivity {
         if (isValid) {
             final Intent intent = new Intent(this, MainActivity.class);
 
-            Observable<List<User>> resultGithubObservable = LoginRetrofitHelper.
-                    Factory.createLogin("582fe0442600009501f227ea"); // user
+            User user = new User();
+            user.setEmail(emailSignInTxt.getText().toString());
+            user.setPassword(passwordSignInTxt.getText().toString());
+
+            Observable<LoginResponse> resultGithubObservable = LoginRetrofitHelper.
+                    Factory.createLogin(user.getEmail(), user.getPassword()); // user
 
             resultGithubObservable
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<User>>() {
+                    .subscribe(new Subscriber<LoginResponse>() {
                         @Override
                         public void onStart() {
                             Log.d(TAG, "onStart: ");
@@ -188,37 +190,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onNext(List<User> users) {
+                        public void onNext(LoginResponse response) {
                             Log.d(TAG, "onNext: ");
-                            /// Simulation of getting users from backend + from the database to simulate the registry of users
-                            boolean found   = false;
-                            String name  = "";
-                            String email = "";
-                            String plate = "";
-                            List<UserMock> userMocksList = UserMock.findWithQuery(UserMock.class, "SELECT * FROM USER_MOCK");
-                            if (userMocksList != null && !userMocksList.isEmpty()) {
-                                for (UserMock u : userMocksList) {
-                                    User user = new User();
-                                    user.setEmail(u.getEmail());
-                                    user.setPassword(u.getPassword());
-                                    user.setName(u.getName());
-                                    user.setPlate(u.getPlate());
-                                    users.add(user);
-                                }
-                            }
-                            for (User user : users) {
-                                if (emailSignInTxt.getText().toString().equalsIgnoreCase(user.getEmail()) &&
-                                        passwordSignInTxt.getText().toString().equalsIgnoreCase(user.getPassword())) {
-                                    found = true;
-                                    name  = user.getName();
-                                    email = user.getEmail();
-                                    plate = user.getPlate();
-                                    break;
-                                } else {
-                                    found = false;
-                                }
-                            }
-                            //////////////////////////////////////////////////////////////////////////////////////////////////
                             try {
                                 if (progressDialog.isShowing()) {
                                     progressDialog.dismiss();
@@ -227,16 +200,14 @@ public class LoginActivity extends AppCompatActivity {
                             } catch(Exception exception) {
                                 exception.printStackTrace();
                             }
-                            if (found) {
+                            if (response != null && response.getSuccess()) {
                                 SharedPreferences sharedPref = getApplicationContext().
                                         getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
                                 // Get shared preferences from mock-backend
                                 final SharedPreferences.Editor editor = sharedPref.edit();
-                                Log.d(TAG, "email: " + email);
-                                Log.d(TAG, "name: " + name);
-                                editor.putString("email", email);
-                                editor.putString("name", name);
-                                editor.putString("plate", plate);
+                                editor.putString("email", response.getUser().getEmail());
+                                editor.putString("name", response.getUser().getName());
+                                editor.putString("plate", response.getUser().getPlate());
                                 if (rememberMe.isChecked()) {
                                     editor.putString("rem", "1");
                                     editor.putString("emailR", emailSignInTxt.getText().toString());
@@ -244,7 +215,6 @@ public class LoginActivity extends AppCompatActivity {
                                     editor.putString("rem", "0");
                                     editor.remove("emailR");
                                 }
-                                found = true;
                                 editor.commit();
                                 try {
                                     if (progressDialog.isShowing()) {

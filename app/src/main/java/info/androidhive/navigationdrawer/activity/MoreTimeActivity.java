@@ -12,10 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.onesignal.OneSignal;
-
-import java.util.List;
 
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.fragment.TutorialStep2;
@@ -44,17 +43,21 @@ public class MoreTimeActivity extends AppCompatActivity {
         final SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("currentActivity", "moreTime");
         editor.commit();
+        String email = "";
+        try {
+            email = sharedPref.getString("email", "");
+        } catch (Exception e) {}
 
         progressDialog = new ProgressDialog(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Extend time ");
+        getSupportActionBar().setTitle("Extend time");
 
         mHandler = new Handler();
 
         Observable<CheckinMock> resultisRegisteredObservable = LoginRetrofitHelper.
-                Factory.createIsRegistered("581deb6b0f0000702a02daee"); // user
+                Factory.createHasCheckIn(email); // user
 
         resultisRegisteredObservable
                 .subscribeOn(Schedulers.io())
@@ -89,29 +92,20 @@ public class MoreTimeActivity extends AppCompatActivity {
                     @Override
                     public void onNext(CheckinMock result) {
                         boolean isExtend = false;
-                        /// Simulation of getting users from backend + from the database to simulate the registry of users
-                        ////////////////////////////// Simulation of cheking if the user has checkin
-                        SharedPreferences sharedPref = getApplicationContext().
-                                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-                        String email = sharedPref.getString("email", "");
-                        List<CheckinMock> checkinMockList = CheckinMock.findWithQuery(
-                                CheckinMock.class, "SELECT * FROM CHECKIN_MOCK WHERE EMAIL=?", email);
-                        if (checkinMockList != null && !checkinMockList.isEmpty()) {
-                            result.setResult(1);
+                        if (!result.isSuccess()) {
+                            Toast.makeText(getApplicationContext(), result.getMensaje(), Toast.LENGTH_LONG).show();
                         } else {
-                            result.setResult(0);
-                        }
-                        /////////////////////////////////////////////////////////////////////////////
-                        isExtend = (result.getResult() == 1);
-                        try {
-                            if (progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                                progressDialog = null;
+                            isExtend = (result.getResult() == 1);
+                            try {
+                                if (progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                    progressDialog = null;
+                                }
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
                             }
-                        } catch(Exception exception) {
-                            exception.printStackTrace();
+                            loadStep2Fragment(isExtend);
                         }
-                        loadStep2Fragment(isExtend);
                     }
                 });
     }

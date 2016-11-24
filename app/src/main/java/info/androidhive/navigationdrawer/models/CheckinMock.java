@@ -9,6 +9,8 @@ import com.orm.SugarRecord;
 public class CheckinMock extends SugarRecord {
     private Integer result;
     private String  email;
+    private String  mensaje;
+    private boolean success;
 
     /**
      *
@@ -44,5 +46,21 @@ public class CheckinMock extends SugarRecord {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 }

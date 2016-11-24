@@ -19,11 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 import com.onesignal.OneSignal;
-
-import java.util.List;
 
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.fragment.HomeFragment;
@@ -31,6 +30,11 @@ import info.androidhive.navigationdrawer.fragment.NotificationsFragment;
 import info.androidhive.navigationdrawer.fragment.RegPayFragment;
 import info.androidhive.navigationdrawer.fragment.SettingsFragment;
 import info.androidhive.navigationdrawer.models.CheckinMock;
+import info.androidhive.navigationdrawer.retrofit_helpers.LoginRetrofitHelper;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -221,18 +225,56 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 Bundle bundle = new Bundle();
                 if (navItemIndex == 0) {
-                    boolean isCheckout = false;
                     ////////////////////////////// Simulation of cheking if the user has checkin
                     SharedPreferences sharedPref = getApplicationContext().
                             getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
                     String email = sharedPref.getString("email", "");
-                    List<CheckinMock> checkinMockList = CheckinMock.findWithQuery(
-                            CheckinMock.class, "SELECT * FROM CHECKIN_MOCK WHERE EMAIL=?", email);
-                    if (checkinMockList != null && !checkinMockList.isEmpty()) {
-                        isCheckout = true;
-                    }
-                    ////////////////////////////////////////////////////////////////////////////
-                    bundle.putBoolean("isCheckout", isCheckout);
+                    Observable<CheckinMock> resultisRegisteredObservable = LoginRetrofitHelper.
+                            Factory.createHasCheckIn(email); // user
+
+                    resultisRegisteredObservable
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<CheckinMock>() {
+                                @Override
+                                public void onStart() {
+                                    Log.d(TAG, "onStart: ");
+                                }
+
+                                @Override
+                                public void onCompleted() {
+                                    Log.d(TAG, "onCompleted: ");
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    Log.d(TAG, "onError: " + e.getMessage());
+                                    Toast.makeText(getApplicationContext(), "An error occurred.", Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onNext(CheckinMock result) {
+                                    boolean isCheckout = false;
+                                    if (!result.isSuccess()) {
+                                        Toast.makeText(getApplicationContext(), result.getMensaje(), Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Bundle bundle = new Bundle();
+                                        isCheckout = (result.getResult() == 1);
+                                        bundle.putBoolean("isCheckout", isCheckout);
+                                        // update the main content by replacing fragments
+                                        Fragment fragment = getHomeFragment();
+                                        if (navItemIndex == 0) {
+                                            fragment.setArguments(bundle);
+                                        }
+                                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                                android.R.anim.fade_out);
+                                        fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+                                        fragmentTransaction.commitAllowingStateLoss();
+                                    }
+                                }
+                            });
+                    return;
                 } else if (navItemIndex == 4) {
                     // 1. Signup, 2. Remember, 3. settings
                     bundle.putInt("settingsFragment", 3);

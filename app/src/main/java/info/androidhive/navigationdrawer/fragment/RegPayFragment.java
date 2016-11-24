@@ -270,7 +270,7 @@ public class RegPayFragment extends Fragment {
 
                     @Override
                     public void onNext(Success success) {
-                        Log.d(TAG, "onNext: " + success.getResult());
+                        Log.d(TAG, "onNext: " + success.isSuccess());
 
                         //// Simulation of the card being registered in the backend
                         SharedPreferences sharedPref = null;
@@ -286,7 +286,8 @@ public class RegPayFragment extends Fragment {
                                 findWithQuery(RegisteredMock.class,
                                         "SELECT * FROM REGISTERED_MOCK WHERE email=?", email);
                         RegisteredMock registeredMock = new RegisteredMock();
-                        registeredMock.setResult(success.getResult());
+                        //registeredMock.setResult(success.isSuccess());
+                        registeredMock.setResult(1);
                         registeredMock.setEmail(email);
                         if (registeredMocksList != null && !registeredMocksList.isEmpty()) {
                             registeredMock.setId(registeredMocksList.get(0).getId());
@@ -294,7 +295,7 @@ public class RegPayFragment extends Fragment {
                         registeredMock.save();
                         ///////////////////////////////////////////////////////////////////////
 
-                        if (success.getResult() == 1) {
+                        if (success.isSuccess()) {
                             payStatus.setText("");
                             payStatus.setVisibility(View.INVISIBLE);
                             inputCard.setText("");

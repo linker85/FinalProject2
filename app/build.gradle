@@ -5,7 +5,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
     defaultConfig {
-        applicationId "info.androidhive.navigationdrawer"
+        applicationId "com.parkmeter"
         minSdkVersion 15
         versionCode 1
         versionName "1.0"
@@ -76,5 +76,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.8.0'
     compile 'com.github.lawloretienne:discreteslider:0.0.9'
     compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     testCompile 'junit:junit:4.12'
 }

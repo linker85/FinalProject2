@@ -22,14 +22,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.activity.LoginActivity;
 import info.androidhive.navigationdrawer.models.Success;
-import info.androidhive.navigationdrawer.models.UserMock;
 import info.androidhive.navigationdrawer.retrofit_helpers.SaveApiRetroFitHelper;
 import rx.Observable;
 import rx.Subscriber;
@@ -151,6 +148,8 @@ public class SettingsFragment extends Fragment {
                 if (plate != null) {
                     inputPlate.setText(plate);
                 }
+
+                inputEmail.setEnabled(false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -197,8 +196,16 @@ public class SettingsFragment extends Fragment {
 
         progressDialog = new ProgressDialog(getActivity());
 
+        String name  = inputName.getText().toString();
+        String pass  = inputPassword.getText().toString();
+        String email = inputEmail.getText().toString();
+        String plate = null;
+        if (settingsFragment == 3) {
+            plate = inputPlate.getText().toString();
+        }
+
         Observable<Success> resultSaveApiObservable = SaveApiRetroFitHelper.
-                Factory.createSaveUser("581deb6b0f0000702a02daee"); // user
+                Factory.createUser(email, pass, name, plate, settingsFragment); // user
         resultSaveApiObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -233,8 +240,12 @@ public class SettingsFragment extends Fragment {
 
                     @Override
                     public void onNext(Success success) {
+                        String  message = null;
+                        if (success.getMensaje() != null) {
+                            message = success.getMensaje();
+                        }
                         ////////////// Simulation of saving the user settings in the backend
-                        boolean successBack = false;
+                        /*boolean successBack = false;
                         String  message     = "Your user couldn´t be registered.";
                         List<UserMock> userMocksList = UserMock.findWithQuery(UserMock.class, "SELECT * FROM USER_MOCK WHERE EMAIL = ?", inputEmail.getText().toString());
                         if (settingsFragment == 1) { // Is signup
@@ -273,13 +284,13 @@ public class SettingsFragment extends Fragment {
                                 successBack = true;
                             }
                             settingStatus.setVisibility(View.INVISIBLE);
-                        }
+                        }*/
                         ////////////////////////////////////////////////////////////////////
-                        if (success.getResult() == 1 && successBack) {
+                        if (success.isSuccess()) {
                             settingStatus.setText("");
                             settingStatus.setVisibility(View.INVISIBLE);
                             if (settingsFragment == 1) { // Sign up
-                                Toast.makeText(getView().getContext(), "Your user was registered", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getView().getContext(), message, Toast.LENGTH_LONG).show();
                                 getActivity().finish();
                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                                 startActivity(intent);

@@ -189,7 +189,7 @@ public class TutorialStep2 extends WizardStep {
                                 @Override
                                 public void onClick(View v) {
                                     Observable<Success> resultSaveApiObservable = SaveApiRetroFitHelper.
-                                            Factory.createCheckInOut("581deb6b0f0000702a02daee"); // user
+                                            Factory.createCheckInOut("email", 2); // user
                                     resultSaveApiObservable
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())

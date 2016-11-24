@@ -38,10 +38,10 @@ public class SaveApiRetroFitHelper {
             SaveService saveService = retrofit.create(SaveService.class);
             return saveService.saveCard(key);
         }
-        public static Observable<Success> createCheckInOut(String key) {
+        public static Observable<Success> createCheckInOut(String email, int type) {
             Retrofit retrofit = createSave();
             SaveService saveService = retrofit.create(SaveService.class);
-            return saveService.saveCheckInOut(key);
+            return saveService.saveCheckInOut(email, type);
         }
         public static Observable<Success> createUser(String email, String password, String name, String plate, int type) {
             Retrofit retrofit = createSave();
@@ -53,8 +53,9 @@ public class SaveApiRetroFitHelper {
     public interface SaveService {
         @GET("/v2/{key}")
         Observable<Success> saveCard(@Path("key") String key);
-        @GET("/v2/{key}")
-        Observable<Success> saveCheckInOut(@Path("key") String key);
+        @GET("/pushAWS/rest/users_service/checkInOut1.do")
+        Observable<Success> saveCheckInOut(@Query("email") String email,
+                                           @Query("type") int type);
         @GET("/pushAWS/rest/users_service/registerUser.do")
         Observable<Success> saveUser(@Query("email") String email,
                                      @Query("password") String password,

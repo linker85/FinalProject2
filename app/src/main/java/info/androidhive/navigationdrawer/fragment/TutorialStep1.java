@@ -21,12 +21,9 @@ import org.codepond.wizardroid.WizardStep;
 import org.codepond.wizardroid.persistence.ContextVariable;
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
-import info.androidhive.navigationdrawer.models.CheckinMock;
 import info.androidhive.navigationdrawer.models.Success;
 import info.androidhive.navigationdrawer.other.UpdateStepperEvent;
 import info.androidhive.navigationdrawer.retrofit_helpers.SaveApiRetroFitHelper;
@@ -106,8 +103,26 @@ public class TutorialStep1 extends WizardStep {
 
                 progressDialog = new ProgressDialog(getActivity());
 
+                SharedPreferences sharedPref = null;
+
+                String email = "";
+                try {
+                    sharedPref    = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                    email  = sharedPref.getString("email", "");
+                    String name   = sharedPref.getString("name", "");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                int type = 0;
+                if (!isCheckout) {
+                    type = 1;
+                } else {
+                    type = 2;
+                }
+
                 Observable<Success> resultSaveApiObservable = SaveApiRetroFitHelper.
-                        Factory.createCheckInOut("581deb6b0f0000702a02daee"); // user
+                        Factory.createCheckInOut(email, type); // user
                 resultSaveApiObservable
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -140,26 +155,33 @@ public class TutorialStep1 extends WizardStep {
 
                             @Override
                             public void onNext(Success success) {
-                                ///////////////////////////////////// Simulation if checkin was done
+                                Toast toast = null;
                                 SharedPreferences sharedPref = getActivity().
                                         getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-                                String email = sharedPref.getString("email", "");
-                                List<CheckinMock> checkinMockList = CheckinMock.findWithQuery(
-                                        CheckinMock.class, "SELECT * FROM CHECKIN_MOCK WHERE EMAIL=?", email);
-                                ////////////////////////////////////////////////////////////////////
                                 final SharedPreferences.Editor editor = sharedPref.edit();
-                                if (checkinMockList == null || checkinMockList.isEmpty()) {
-                                    /*CheckinMock checkinMock = new CheckinMock();
-                                    checkinMock.setEmail(email);
-                                    checkinMock.setResult(1);
-                                    checkinMock.save();*/
-                                    editor.putBoolean("checkin_temp", true);
+                                if (success.isSuccess()) {
+                                    if (!isCheckout) {
+                                        // If not checked set temp value to true
+                                        editor.putBoolean("checkin_temp", true);
+                                        editor.commit();
+                                        toast = Toast.makeText(getActivity(), "Check in was succesful", Toast.LENGTH_LONG);
+                                        toast.show();
+                                        EventBus.getDefault().post(new UpdateStepperEvent("continue"));
+                                    } else {
+                                        // Do checkout
+                                        editor.remove("checkin_temp");
+                                        editor.commit();
+                                        toast = Toast.makeText(getActivity(), "Check out was succesful", Toast.LENGTH_LONG);
+                                        toast.show();
+                                        getActivity().finish();
+                                        startActivity(getActivity().getIntent());
+                                    }
                                 } else {
-                                    editor.remove("checkin_temp");
-                                    checkinMockList.get(0).delete();
+                                    toast = Toast.makeText(getActivity(), "An error occured", Toast.LENGTH_LONG);
+                                    toast.show();
+                                    getActivity().finish();
+                                    startActivity(getActivity().getIntent());
                                 }
-                                editor.commit();
-                                Toast toast = null;
                                 try {
                                     if (progressDialog.isShowing()) {
                                         progressDialog.dismiss();
@@ -167,16 +189,6 @@ public class TutorialStep1 extends WizardStep {
                                     }
                                 } catch(Exception exception) {
                                     exception.printStackTrace();
-                                }
-                                if (!isCheckout) {
-                                    toast = Toast.makeText(getActivity(), "Check in was succesful", Toast.LENGTH_LONG);
-                                    toast.show();
-                                    EventBus.getDefault().post(new UpdateStepperEvent("continue"));
-                                } else {
-                                    toast = Toast.makeText(getActivity(), "Check out was succesful", Toast.LENGTH_LONG);
-                                    toast.show();
-                                    getActivity().finish();
-                                    startActivity(getActivity().getIntent());
                                 }
                             }
                         });

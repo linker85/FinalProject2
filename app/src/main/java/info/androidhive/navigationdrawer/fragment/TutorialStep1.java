@@ -64,8 +64,6 @@ public class TutorialStep1 extends WizardStep {
         View view = inflater.inflate(R.layout.step_check_in, container, false);
         ButterKnife.bind(this, view);
 
-        //scannerBTN = (Button) view.findViewById(R.id.scanner);
-
         if (!isCheckout) {
             scannerBTN.setText("Check in");
         } else {
@@ -96,7 +94,7 @@ public class TutorialStep1 extends WizardStep {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 //get the extras that are returned from the intent
-                String contents = intent.getStringExtra("SCAN_RESULT");
+                final String contents = intent.getStringExtra("SCAN_RESULT");
                 String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 
                 Log.d("TAG", "onActivityResult: " + isCheckout);
@@ -107,9 +105,8 @@ public class TutorialStep1 extends WizardStep {
 
                 String email = "";
                 try {
-                    sharedPref    = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-                    email  = sharedPref.getString("email", "");
-                    String name   = sharedPref.getString("name", "");
+                    sharedPref  = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                    email       = sharedPref.getString("email", "");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -163,6 +160,7 @@ public class TutorialStep1 extends WizardStep {
                                     if (!isCheckout) {
                                         // If not checked set temp value to true
                                         editor.putBoolean("checkin_temp", true);
+                                        editor.putString("coordinates", contents);
                                         editor.commit();
                                         toast = Toast.makeText(getActivity(), "Check in was succesful", Toast.LENGTH_LONG);
                                         toast.show();

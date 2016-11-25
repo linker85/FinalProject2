@@ -43,6 +43,11 @@ public class SaveApiRetroFitHelper {
             SaveService saveService = retrofit.create(SaveService.class);
             return saveService.saveCheckInOut(email, type);
         }
+        public static Observable<Success> createCheckIn2(String email, String coordinates, int minutes, int hours) {
+            Retrofit retrofit = createSave();
+            SaveService saveService = retrofit.create(SaveService.class);
+            return saveService.saveCheckIn2(email, coordinates, minutes, hours);
+        }
         public static Observable<Success> createUser(String email, String password, String name, String plate, int type) {
             Retrofit retrofit = createSave();
             SaveService saveService = retrofit.create(SaveService.class);
@@ -56,6 +61,11 @@ public class SaveApiRetroFitHelper {
         @GET("/pushAWS/rest/users_service/checkInOut1.do")
         Observable<Success> saveCheckInOut(@Query("email") String email,
                                            @Query("type") int type);
+        @GET("/pushAWS/rest/users_service/checkIn2.do")
+        Observable<Success> saveCheckIn2(@Query("email") String email,
+                                         @Query("coordinates") String coordinates,
+                                         @Query("minutes") int minutes,
+                                         @Query("hours") int hours);
         @GET("/pushAWS/rest/users_service/registerUser.do")
         Observable<Success> saveUser(@Query("email") String email,
                                      @Query("password") String password,

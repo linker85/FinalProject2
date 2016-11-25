@@ -23,12 +23,9 @@ import com.etiennelawlor.discreteslider.library.utilities.DisplayUtility;
 import org.codepond.wizardroid.WizardStep;
 import org.codepond.wizardroid.persistence.ContextVariable;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
-import info.androidhive.navigationdrawer.models.CheckinMock;
 import info.androidhive.navigationdrawer.models.Success;
 import info.androidhive.navigationdrawer.retrofit_helpers.SaveApiRetroFitHelper;
 import rx.Observable;
@@ -53,10 +50,12 @@ public class TutorialStep2 extends WizardStep {
     @BindView(R.id.btn_save_time)
     public Button   saveTime;
 
-    private String[] tickMarkLabels1 = {"0 min", "5 min", "10 min", "15 min", "30 min", "45 min"};
-    private String[] tickMarkLabels2 = {"0 hr", "1 hr", "2 hr", "3 hr", "4 hr", "5 hr", "6 hr", "7 hr", "8 hr"};
-    private double[] costLabels1 = {0, 0.5, 1, 1, 1,5, 3, 4,5};
-    private double[] costLabels2 = {0, 10, 20, 30, 40, 50, 60, 70, 80};
+    private final String[] tickMarkLabels1 = {"0 min", "5 min", "10 min", "15 min", "30 min", "45 min"};
+    private final String[] tickMarkLabels2 = {"0 hr", "1 hr", "2 hr", "3 hr", "4 hr", "5 hr", "6 hr", "7 hr", "8 hr"};
+    private final int[]    tickMarkTime1   = {0, 5, 10, 15, 30, 45};
+    private final int[]    tickMarkTime2   = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    private final double[] costLabels1     = {0, 0.5, 1, 1, 1,5, 3, 4,5};
+    private final double[] costLabels2     = {0, 10, 20, 30, 40, 50, 60, 70, 80};
 
     // region Views
     @BindView(R.id.discrete_slider1)
@@ -69,15 +68,8 @@ public class TutorialStep2 extends WizardStep {
     public RelativeLayout tickMarkLabelsRelativeLayout2;
     // endregion
 
-    private static final int SNAP_MIN = 0;
-    private static final int SNAP_MIDDLE = 50;
-    private static final int SNAP_MAX = 100;
-
-    private static final int LOWER_HALF = (SNAP_MIN + SNAP_MIDDLE) / 2;
-    private static final int UPPER_HALF = (SNAP_MIDDLE + SNAP_MAX) / 2;
-
-    private View.OnClickListener yesOnClickListener;
-    private View.OnClickListener noOnClickListener;
+    private String email;
+    private String coordinates;
 
     @ContextVariable
     private boolean isCheckin;
@@ -96,23 +88,21 @@ public class TutorialStep2 extends WizardStep {
         View v = inflater.inflate(R.layout.step_choose_time, container, false);
         ButterKnife.bind(this, v);
 
-        /*totalToPay                   = (TextView)       v.findViewById(R.id.total_to_pay);
-        snap_bar                     = (TextView)       v.findViewById(R.id.snap_bar);
-        relativeLayout               = (RelativeLayout) v.findViewById(R.id.parent_step);
-        saveTime                     = (Button)         v.findViewById(R.id.btn_save_time);
-
-        discreteSlider1               = (DiscreteSlider) v.findViewById(R.id.discrete_slider1);
-        tickMarkLabelsRelativeLayout1 = (RelativeLayout) v.findViewById(R.id.tick_mark_labels_rl);
-        discreteSlider2               = (DiscreteSlider) v.findViewById(R.id.discrete_slider2);
-        tickMarkLabelsRelativeLayout2 = (RelativeLayout) v.findViewById(R.id.tick_mark_labels_r2);*/
-
         isExtend = getArguments().getBoolean("isExtend");
 
         SharedPreferences sharedPref = null;
         try {
             sharedPref = getActivity().
                     getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-            isCheckin = sharedPref.getBoolean("checkin_temp", false);
+            isCheckin   = sharedPref.getBoolean("checkin_temp", false);
+            coordinates = sharedPref.getString("coordinates", "");
+            email       = sharedPref.getString("email", "");
+
+            final SharedPreferences.Editor editor = sharedPref.edit();
+            editor.remove("hr");
+            editor.remove("min");
+            editor.commit();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,6 +146,8 @@ public class TutorialStep2 extends WizardStep {
                         getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
                 selectionMin = sharedPref.getInt("min", 0);
                 selectionHr  = sharedPref.getInt("hr", 0);
+                final int minutes = tickMarkTime1[selectionMin];
+                final int hours   = tickMarkTime2[selectionHr];
 
                 Log.d("TAG", "onPositionChangedMin: " + costLabels2[selectionHr]);
                 Log.d("TAG", "onPositionChangedHr: " + costLabels1[selectionMin]);
@@ -188,8 +180,9 @@ public class TutorialStep2 extends WizardStep {
                             .setAction("Yes", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+
                                     Observable<Success> resultSaveApiObservable = SaveApiRetroFitHelper.
-                                            Factory.createCheckInOut("email", 2); // user
+                                            Factory.createCheckIn2(email, coordinates, minutes, hours); // user
                                     resultSaveApiObservable
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
@@ -197,7 +190,7 @@ public class TutorialStep2 extends WizardStep {
                                                 @Override
                                                 public void onStart() {
                                                     Log.d(TAG, "onStart: ");
-                                                    progressDialog.setMessage("Loading...");
+                                                    progressDialog.setMessage("Saving...");
                                                     progressDialog.show();
                                                 }
 
@@ -210,32 +203,37 @@ public class TutorialStep2 extends WizardStep {
                                                 public void onError(Throwable e) {
                                                     Log.d(TAG, "onError: " + e.getMessage());
                                                     totalToPay.setText("An error ocurred, your time couldn´t be set.");
+                                                    try {
+                                                        if (progressDialog.isShowing()) {
+                                                            progressDialog.dismiss();
+                                                        }
+                                                    } catch(Exception exception) {
+                                                        exception.printStackTrace();
+                                                    }
                                                 }
 
                                                 @Override
                                                 public void onNext(Success success) {
-                                                    CheckinMock checkinMock = null;
-                                                    ///////////////////////////////////// Simulation of registering time
-                                                    SharedPreferences sharedPref = getActivity().
-                                                            getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-                                                    String email = sharedPref.getString("email", "");
-                                                    List<CheckinMock> checkinMockList = CheckinMock.findWithQuery(
-                                                            CheckinMock.class, "SELECT * FROM CHECKIN_MOCK WHERE EMAIL=?", email);
-                                                    final SharedPreferences.Editor editor = sharedPref.edit();
-                                                    editor.remove("checkin_temp");
-                                                    editor.commit();
-                                                    if (checkinMockList != null && !checkinMockList.isEmpty()) {
-                                                        checkinMock = checkinMockList.get(0);
+                                                    if (success.getResult() == 1 && success.isSuccess()) {
+                                                        SharedPreferences sharedPref = getActivity().
+                                                                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                                                        final SharedPreferences.Editor editor = sharedPref.edit();
+                                                        editor.remove("checkin_temp");
+                                                        editor.commit();
+                                                        Toast.makeText(getActivity(), finalMessage, Toast.LENGTH_LONG).show();
+                                                        getActivity().finish();
+                                                        startActivity(getActivity().getIntent());
                                                     } else {
-                                                        checkinMock = new CheckinMock();
-                                                        checkinMock.setResult(1);
-                                                        checkinMock.setEmail(email);
+                                                        totalToPay.setText("An error ocurred, your time couldn´t be set.");
                                                     }
-                                                    checkinMock.save();
-                                                    ////////////////////////////////////////////////////////////////////
-                                                    Toast.makeText(getActivity(), finalMessage, Toast.LENGTH_LONG).show();
-                                                    getActivity().finish();
-                                                    startActivity(getActivity().getIntent());
+                                                    try {
+                                                        if (progressDialog.isShowing()) {
+                                                            progressDialog.dismiss();
+                                                        }
+                                                    } catch(Exception exception) {
+                                                        exception.printStackTrace();
+                                                    }
+
                                                 }
                                             });
                                 }

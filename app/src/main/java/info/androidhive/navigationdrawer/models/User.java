@@ -21,6 +21,10 @@ public class User {
     @SerializedName("plate")
     @Expose
     private String plate;
+    @SerializedName("card")
+    @Expose
+    private Integer card;
+
     /**
      * 
      * @return
@@ -101,14 +105,11 @@ public class User {
         this.plate = plate;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", plate='" + plate + '\'' +
-                '}';
+    public Integer getCard() {
+        return card;
+    }
+
+    public void setCard(Integer card) {
+        this.card = card;
     }
 }

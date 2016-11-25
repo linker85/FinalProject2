@@ -96,15 +96,15 @@ public class MoreTimeActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), result.getMensaje(), Toast.LENGTH_LONG).show();
                         } else {
                             isExtend = (result.getResult() == 1);
-                            try {
-                                if (progressDialog.isShowing()) {
-                                    progressDialog.dismiss();
-                                    progressDialog = null;
-                                }
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                            }
                             loadStep2Fragment(isExtend);
+                        }
+                        try {
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
                         }
                     }
                 });

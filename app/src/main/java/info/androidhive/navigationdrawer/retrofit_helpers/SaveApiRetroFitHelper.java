@@ -7,7 +7,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -33,10 +32,10 @@ public class SaveApiRetroFitHelper {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                     .build();
         }
-        public static Observable<Success> createSaveCard(String key) {
+        public static Observable<Success> createSaveCard(String email) {
             Retrofit retrofit = createSave();
             SaveService saveService = retrofit.create(SaveService.class);
-            return saveService.saveCard(key);
+            return saveService.saveCard(email);
         }
         public static Observable<Success> createCheckInOut(String email, int type) {
             Retrofit retrofit = createSave();
@@ -56,8 +55,8 @@ public class SaveApiRetroFitHelper {
     }
 
     public interface SaveService {
-        @GET("/v2/{key}")
-        Observable<Success> saveCard(@Path("key") String key);
+        @GET("/pushAWS/rest/users_service/saveCard.do")
+        Observable<Success> saveCard(@Query("email") String email);
         @GET("/pushAWS/rest/users_service/checkInOut1.do")
         Observable<Success> saveCheckInOut(@Query("email") String email,
                                            @Query("type") int type);

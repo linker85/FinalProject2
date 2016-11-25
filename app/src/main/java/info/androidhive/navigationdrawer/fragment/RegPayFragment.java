@@ -21,12 +21,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
-import info.androidhive.navigationdrawer.models.RegisteredMock;
 import info.androidhive.navigationdrawer.models.Success;
 import info.androidhive.navigationdrawer.retrofit_helpers.SaveApiRetroFitHelper;
 import rx.Observable;
@@ -123,16 +120,6 @@ public class RegPayFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*inputLayoutCard   = (TextInputLayout) getView().findViewById(R.id.input_layout_card);
-        inputCard         = (EditText) getView().findViewById(R.id.input_card);
-        inputLayoutMM     = (TextInputLayout) getView().findViewById(R.id.input_layout_mm);
-        inputMM           = (EditText) getView().findViewById(R.id.input_mm);
-        inputLayoutYYYY   = (TextInputLayout) getView().findViewById(R.id.input_layout_yyyy);
-        inputYYYY         = (EditText) getView().findViewById(R.id.input_yyyy);
-        inputLayoutCVV    = (TextInputLayout) getView().findViewById(R.id.input_layout_cvv);
-        inputCVV          = (EditText) getView().findViewById(R.id.input_cvv);
-        btn_register_card = (Button) getView().findViewById(R.id.btn_register_card);
-        payStatus         = (TextView) getView().findViewById(R.id.id_pay_status);*/
 
         inputCard.addTextChangedListener(new RegPayFragment.MyTextWatcher(inputCard));
 
@@ -184,26 +171,17 @@ public class RegPayFragment extends Fragment {
     }
 
     private boolean isAlreadyRegistered() {
-        //// Simulation of checking if the card is already registered in the backend
         SharedPreferences sharedPref = null;
-        String email = "";
+        int card = 0;
         try {
             sharedPref = getActivity().
                     getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-            email = sharedPref.getString("email", "");
+            card = sharedPref.getInt("card", 0);
         } catch (Exception e) {
 
         }
-        List<RegisteredMock> registeredMocksList = RegisteredMock.
-                findWithQuery(RegisteredMock.class,
-                        "SELECT * FROM REGISTERED_MOCK WHERE email=?", email);
-        if (registeredMocksList != null && !registeredMocksList.isEmpty()) {
-            isAlreadyRegistered = true;
-        } else {
-            isAlreadyRegistered = false;
-        }
+        isAlreadyRegistered = (card > 0);
         return isAlreadyRegistered;
-        ///////////////////////////////////////////////////////////////////////
     }
 
     private ProgressDialog progressDialog;
@@ -235,8 +213,19 @@ public class RegPayFragment extends Fragment {
         if (exito) {
             return;
         }
+
+        SharedPreferences sharedPref = null;
+        String email = "";
+        try {
+            sharedPref = getActivity().
+                    getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+            email = sharedPref.getString("email", "");
+        } catch (Exception e) {
+            Log.e(TAG, "submitForm: " + e.getMessage());
+        }
+
         Observable<Success> resultSaveApiObservable = SaveApiRetroFitHelper.
-                Factory.createSaveCard("581deb6b0f0000702a02daee"); // user
+                Factory.createSaveCard(email); // user
         resultSaveApiObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -271,30 +260,6 @@ public class RegPayFragment extends Fragment {
                     @Override
                     public void onNext(Success success) {
                         Log.d(TAG, "onNext: " + success.isSuccess());
-
-                        //// Simulation of the card being registered in the backend
-                        SharedPreferences sharedPref = null;
-                        String email = "";
-                        try {
-                            sharedPref = getActivity().
-                                    getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-                            email = sharedPref.getString("email", "");
-                        } catch (Exception e) {
-
-                        }
-                        List<RegisteredMock> registeredMocksList = RegisteredMock.
-                                findWithQuery(RegisteredMock.class,
-                                        "SELECT * FROM REGISTERED_MOCK WHERE email=?", email);
-                        RegisteredMock registeredMock = new RegisteredMock();
-                        //registeredMock.setResult(success.isSuccess());
-                        registeredMock.setResult(1);
-                        registeredMock.setEmail(email);
-                        if (registeredMocksList != null && !registeredMocksList.isEmpty()) {
-                            registeredMock.setId(registeredMocksList.get(0).getId());
-                        }
-                        registeredMock.save();
-                        ///////////////////////////////////////////////////////////////////////
-
                         if (success.isSuccess()) {
                             payStatus.setText("");
                             payStatus.setVisibility(View.INVISIBLE);

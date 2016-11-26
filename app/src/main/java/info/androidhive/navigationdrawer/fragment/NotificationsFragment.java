@@ -104,6 +104,8 @@ public class NotificationsFragment extends Fragment {
             // Landscape
             Intent intent = new Intent(getActivity(), MapActivity.class);
             intent.putExtra("coordinates", event.coordinates);
+            intent.putExtra("title", event.title);
+            intent.putExtra("body", event.body);
             startActivity(intent);
         } else {
             // Landscape
@@ -111,6 +113,8 @@ public class NotificationsFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putString("coordinates", event.coordinates);
+            bundle.putString("title", event.title);
+            bundle.putString("body", event.body);
             fragmentMap.setArguments(bundle);
 
             FragmentTransaction mft = getActivity().getSupportFragmentManager().beginTransaction();

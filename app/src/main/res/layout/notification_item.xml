@@ -42,7 +42,7 @@
             android:text="Just gona stand there and ..." />
 
         <!-- Rightend Duration -->
-        <TextView
+        <!--<TextView
             android:id="@+id/r_item_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,6 +53,6 @@
             android:layout_marginRight="5dip"
             android:textSize="12dip"
             android:textColor="#dcdcdc"
-            android:textStyle="bold"/>
+            android:textStyle="bold"/>-->
 
     </RelativeLayout>

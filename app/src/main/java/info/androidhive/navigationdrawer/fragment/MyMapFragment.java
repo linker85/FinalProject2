@@ -52,12 +52,6 @@ public class MyMapFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //final int orientation = getResources().getConfiguration().orientation;
-
-        //if (orientation == 2) {
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-            //mMapView = (MapView) view.findViewById(R.id.map2);
-
             if (mMapView != null) {
                 mMapView.onCreate(savedInstanceState);
 
@@ -74,8 +68,12 @@ public class MyMapFragment extends Fragment {
                     public void onMapReady(GoogleMap gMap) {
                         mMap = gMap;
                         String coordinates = "";
+                        String title       = "";
+                        String body        = "";
                         try {
                             coordinates = getArguments().getString("coordinates", "");
+                            title       = getArguments().getString("title", "");
+                            body        = getArguments().getString("body", "");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -88,7 +86,7 @@ public class MyMapFragment extends Fragment {
 
 
                             LatLng sydney = new LatLng(Double.parseDouble(coordinatesD[0]), Double.parseDouble(coordinatesD[1]));
-                            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+                            mMap.addMarker(new MarkerOptions().position(sydney).title(title).snippet(body));
 
                             // For zooming automatically to the location of the marker
                             CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();

@@ -44,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.input_layout_password_sign_in)
     public TextInputLayout inputLayoutPassword;
 
+    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             sharedPref   = getApplicationContext().
                     getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
             defaultValue = sharedPref.getString("rem", "0");
+            userId       = sharedPref.getString("userId", "");
             if (defaultValue != null && defaultValue.equals("1")) {
                 // Do the login
                 emailSignInTxt.setText(sharedPref.getString("emailR", ""));
@@ -158,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
             user.setPassword(passwordSignInTxt.getText().toString());
 
             Observable<LoginResponse> resultGithubObservable = LoginRetrofitHelper.
-                    Factory.createLogin(user.getEmail(), user.getPassword()); // user
+                    Factory.createLogin(user.getEmail(), user.getPassword(), userId); // user
 
             resultGithubObservable
                     .subscribeOn(Schedulers.io())

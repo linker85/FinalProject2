@@ -34,10 +34,10 @@ public class LoginRetrofitHelper {
                     .build();
         }
 
-        public static Observable<LoginResponse> createLogin(String email, String password) {
+        public static Observable<LoginResponse> createLogin(String email, String password, String userId) {
             Retrofit retrofit = create();
             LoginService loginService = retrofit.create(LoginService.class);
-            return loginService.getLogin(email, password);
+            return loginService.getLogin(email, password, userId);
         }
         public static Observable<CheckinMock> createHasCheckIn(String email) {
             Retrofit retrofit = create();
@@ -48,7 +48,9 @@ public class LoginRetrofitHelper {
 
     public interface LoginService {
         @GET("/pushAWS/rest/users_service/login.do")
-        Observable<LoginResponse> getLogin(@Query("email") String email, @Query("password") String password);
+        Observable<LoginResponse> getLogin(@Query("email") String email,
+                                           @Query("password") String password,
+                                           @Query("userId") String userId);
         @GET("/pushAWS/rest/users_service/isChecked.do")
         Observable<CheckinMock> isChecked(@Query("email") String email);
     }

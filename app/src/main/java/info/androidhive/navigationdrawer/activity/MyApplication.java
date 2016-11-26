@@ -1,6 +1,8 @@
 package info.androidhive.navigationdrawer.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.util.Log;
 
@@ -43,6 +45,23 @@ public class MyApplication extends com.orm.SugarApp {
                 .setNotificationReceivedHandler(new NotificationReceivedHandler())
                 .autoPromptLocation(true)
                 .init();
+
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                Log.d("debug", "userId:" + userId);
+                try {
+                    SharedPreferences sharedPref = getApplicationContext().
+                            getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                    // Get shared preferences from mock-backend
+                    final SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("userId", userId);
+                    editor.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         singleton = this;
     }
 
@@ -65,8 +84,15 @@ public class MyApplication extends com.orm.SugarApp {
             JSONObject data = result.notification.payload.additionalData;
             String customKey;
 
+            boolean extendTime = false;
+
             if (data != null) {
                 customKey = data.optString("customkey", null);
+
+                if (data.optInt("remaining", -2) > 0) {
+                    extendTime = true;
+                }
+
                 if (customKey != null)
                     Log.i("OneSignalExample", "customkey set with value: " + customKey);
             }
@@ -75,19 +101,13 @@ public class MyApplication extends com.orm.SugarApp {
                 Log.i("OneSignalExample", "Button pressed with id: " + result.action.actionID);
 
             // The following can be used to open an Activity of your choice.
+            if (extendTime) {
+                Intent intent = new Intent(getApplicationContext(),
+                        MoreTimeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
 
-            Intent intent = new Intent(getApplicationContext(),
-                    MoreTimeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-
-            // Add the following to your AndroidManifest.xml to prevent the launching of your main Activity
-            //  if you are calling startActivity above.
-         /*
-            <application ...>
-              <meta-data android:name="com.onesignal.NotificationOpened.DEFAULT" android:value="DISABLE" />
-            </application>
-         */
         }
     }
 

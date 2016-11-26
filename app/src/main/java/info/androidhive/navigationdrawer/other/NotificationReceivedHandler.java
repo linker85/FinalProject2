@@ -7,10 +7,6 @@ import com.onesignal.OneSignal;
 
 import org.json.JSONObject;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import info.androidhive.navigationdrawer.models.Notification;
 
 /**
@@ -23,8 +19,6 @@ import info.androidhive.navigationdrawer.models.Notification;
 * */
 public class NotificationReceivedHandler implements OneSignal.NotificationReceivedHandler {
     private static final String TAG = "HandleTAG_";
-
-    SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
     public void notificationReceived(OSNotification notification) {
@@ -40,17 +34,7 @@ public class NotificationReceivedHandler implements OneSignal.NotificationReceiv
 
             Log.d(TAG, "notificationReceived: " + Thread.currentThread());
 
-            dateSend    = data.optString("date_send", null);
-
-            java.util.Date date        = null;
-            java.sql.Date sqlStartDate = null;
-            try {
-                date = sdf1.parse(dateSend);
-                sqlStartDate = new Date(date.getTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+            dateSend = data.optString("date_send", null);
 
             email       = data.optString("email", null);
             remaining   = data.optInt("remaining", -2);
@@ -60,10 +44,16 @@ public class NotificationReceivedHandler implements OneSignal.NotificationReceiv
             notification1.setBody(notification.payload.body);
 
             notification1.setRemaining(remaining);
-            notification1.setDateS(date);
+            notification1.setDateS(dateSend);
             notification1.setEmail(email);
             notification1.setCoordinates(coordinates);
-            notification1.save();
+            try {
+                notification1.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG, "notificationReceived2: " + Thread.currentThread());
         }
     }
 }

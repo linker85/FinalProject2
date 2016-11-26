@@ -2,8 +2,6 @@ package info.androidhive.navigationdrawer.models;
 
 import com.orm.SugarRecord;
 
-import java.util.Date;
-
 /**
  * Created by linke_000 on 30/10/2016.
  */
@@ -11,7 +9,7 @@ import java.util.Date;
 public class Notification extends SugarRecord {
     private String title;
     private String body;
-    private Date   dateS;
+    private String dateS;
     private String email;
     private int    remaining;
     private String coordinates;
@@ -19,13 +17,13 @@ public class Notification extends SugarRecord {
     public Notification() {
     }
 
-    public Notification(String title, String body, Date date) {
+    public Notification(String title, String body, String date) {
         this.title = title;
         this.body = body;
         this.dateS = date;
     }
 
-    public Notification(String title, String body, Date dateS, String coordinates) {
+    public Notification(String title, String body, String dateS, String coordinates) {
         this.title       = title;
         this.body        = body;
         this.dateS       = dateS;
@@ -48,11 +46,11 @@ public class Notification extends SugarRecord {
         this.body = body;
     }
 
-    public Date getDateS() {
+    public String getDateS() {
         return dateS;
     }
 
-    public void setDateS(Date dateS) {
+    public void setDateS(String dateS) {
         this.dateS = dateS;
     }
 

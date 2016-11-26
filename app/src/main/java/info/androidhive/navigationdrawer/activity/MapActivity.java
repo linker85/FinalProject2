@@ -26,7 +26,6 @@ public class MapActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Set current activity
-        // Set current activity
         SharedPreferences sharedPref = getApplicationContext().
                 getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPref.edit();
@@ -39,9 +38,13 @@ public class MapActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         String coordinates = intent.getStringExtra("coordinates");
+        String title       = intent.getStringExtra("title");
+        String body        = intent.getStringExtra("body");
 
         Bundle bundle = new Bundle();
         bundle.putString("coordinates", coordinates);
+        bundle.putString("title", title);
+        bundle.putString("body", body);
         fragmentMap.setArguments(bundle);
 
         FragmentTransaction mft = getSupportFragmentManager().beginTransaction();

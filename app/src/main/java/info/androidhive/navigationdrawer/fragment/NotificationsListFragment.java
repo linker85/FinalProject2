@@ -66,12 +66,6 @@ public class NotificationsListFragment extends Fragment {
     }
 
     public void onAttachFragment(Fragment fragment) {
-        /*try {
-            mOnPlayerSelectionSetListener = (OnHeadlineSelectedListener)fragment;
-        } catch (ClassCastException e)  {
-            throw new ClassCastException(
-                    fragment.toString() + " must implement OnPlayerSelectionSetListener");
-        }*/
     }
 
     // invoked by EventBus
@@ -79,7 +73,7 @@ public class NotificationsListFragment extends Fragment {
     public void onEvent(final UpdateMapEvent event) {
         // Do something!
         Log.d(TAG, "onEventMainThread: " + event.coordinates);
-        eventBus.post(new UpdateMapEvent2(event.coordinates));
+        eventBus.post(new UpdateMapEvent2(event.coordinates, event.title, event.body));
     }
 
     @Override
@@ -150,10 +144,8 @@ public class NotificationsListFragment extends Fragment {
                 }
 
                 Log.d(TAG, "onClickDialogDate: " + endYear + "/" + endMonthS + "/" + endDay);
-                //doOpenDate1 = (TextView) getActivity().findViewById(R.id.initDateTxt);
-                //doOpenDate2 = (TextView) getActivity().findViewById(R.id.endDateTxt);
-                doOpenDate1.setText(startYear + "-" + startMonthS + "-" + startDayS);
-                doOpenDate2.setText(endYear + "-" + endMonthS + "-" + endDayS);
+                doOpenDate1.setText(startYear + "-" + startMonthS + "-" + startDayS + " 00:00:00");
+                doOpenDate2.setText(endYear + "-" + endMonthS + "-" + endDayS + " 23:59:59");
                 dialog.dismiss();
 
 
@@ -212,9 +204,12 @@ public class NotificationsListFragment extends Fragment {
 
         @Override
         protected Void doInBackground(String... params) {
+
+            // datetime(CAST(strftime('%s', DATE_S) AS INT), 'unixepoch')
+
             notificationArrayList = Notification.findWithQuery(Notification.class,
                     "SELECT * FROM NOTIFICATION " +
-                            " WHERE EMAIL = ? AND strftime('%Y-%m-%d %H:%M:%S', datetime(DATE_S/1000, 'unixepoch')) BETWEEN ? AND ? ",
+                            " WHERE EMAIL = ? AND datetime(CAST(strftime('%s', DATE_S) AS INT), 'unixepoch') BETWEEN ? AND ? ",
                     params[0], params[1], params[2]);
             return null;
         }

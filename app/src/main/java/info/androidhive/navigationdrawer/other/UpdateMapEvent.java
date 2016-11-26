@@ -6,8 +6,12 @@ package info.androidhive.navigationdrawer.other;
 
 public class UpdateMapEvent {
     public final String coordinates;
+    public final String title;
+    public final String body;
 
-    public UpdateMapEvent(String coordinates) {
+    public UpdateMapEvent(String coordinates, String title, String body) {
         this.coordinates = coordinates;
+        this.title       = title;
+        this.body        = body;
     }
 }

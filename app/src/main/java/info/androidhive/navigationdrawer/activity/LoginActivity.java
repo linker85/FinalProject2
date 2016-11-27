@@ -212,6 +212,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("name", response.getUser().getName());
                                 editor.putString("plate", response.getUser().getPlate());
                                 editor.putInt("card", response.getUser().getCard());
+                                editor.putString("userId", response.getUser().getUserid());
                                 if (rememberMe.isChecked()) {
                                     editor.putString("rem", "1");
                                     editor.putString("emailR", emailSignInTxt.getText().toString());

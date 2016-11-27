@@ -24,6 +24,9 @@ public class User {
     @SerializedName("card")
     @Expose
     private Integer card;
+    @SerializedName("userid")
+    @Expose
+    private String userid;
 
     /**
      * 
@@ -111,5 +114,13 @@ public class User {
 
     public void setCard(Integer card) {
         this.card = card;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 }

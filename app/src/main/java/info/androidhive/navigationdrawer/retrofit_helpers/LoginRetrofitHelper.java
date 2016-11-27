@@ -44,6 +44,11 @@ public class LoginRetrofitHelper {
             LoginService checkedService = retrofit.create(LoginService.class);
             return checkedService.isChecked(email);
         }
+        public static Observable<CheckinMock> createUpdateUserId(String email, String userId) {
+            Retrofit retrofit = create();
+            LoginService checkedService = retrofit.create(LoginService.class);
+            return checkedService.updateUserId(email, userId);
+        }
     }
 
     public interface LoginService {
@@ -53,5 +58,7 @@ public class LoginRetrofitHelper {
                                            @Query("userId") String userId);
         @GET("/pushAWS/rest/users_service/isChecked.do")
         Observable<CheckinMock> isChecked(@Query("email") String email);
+        @GET("/pushAWS/rest/users_service/updateUserId.do")
+        Observable<CheckinMock> updateUserId(@Query("email") String email, @Query("userId") String userId);
     }
 }

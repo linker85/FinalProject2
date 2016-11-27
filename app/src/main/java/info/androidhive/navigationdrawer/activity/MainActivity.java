@@ -93,24 +93,8 @@ public class MainActivity extends AppCompatActivity {
         OneSignal.setSubscription(true);
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
-            public void idsAvailable(String userId, String registrationId) {
-                String text = "OneSignal UserID:\n" + userId + "\n\n";
-
-                if (registrationId != null) {
-                    text += "Google Registration Id:\n" + registrationId;
-                    try {
-                        SharedPreferences sharedPref = getApplicationContext().
-                                getSharedPreferences("my_park_meter_pref",
-                                        Context.MODE_PRIVATE);
-                        OneSignal.sendTag(sharedPref.getString("email", "").toString(),
-                                sharedPref.getString("email", "").toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    text += "Google Registration Id:\nCould not subscribe for push";
-                }
-                Log.d(TAG, "idsAvailable->: " + text);
+            public void idsAvailable(String newUserId, String registrationId) {
+                checkIfWeHaveUserId(newUserId);
             }
         });
 
@@ -127,8 +111,6 @@ public class MainActivity extends AppCompatActivity {
         navHeader = navigationView.getHeaderView(0);
         txtName        = (TextView)  navHeader.findViewById(R.id.name);
         txtWebsite     = (TextView)  navHeader.findViewById(R.id.website);
-        //imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
-        //imgProfile     = (ImageView) navHeader.findViewById(R.id.img_profile);
 
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
@@ -369,10 +351,6 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 0;
                         CURRENT_TAG = ID_HOME;
                         break;
-/*                    case R.id.id_more_time:
-                        navItemIndex = 1;
-                        CURRENT_TAG = ID_MORE_TIME;
-                        break;*/
                     case R.id.id_reg_pay:
                         navItemIndex = 2;
                         CURRENT_TAG = ID_REG_PAY;
@@ -386,8 +364,6 @@ public class MainActivity extends AppCompatActivity {
                         CURRENT_TAG = ID_SETTINGS;
                         break;
                     case R.id.id_sign_off:
-                        /*navItemIndex = 5;
-                        CURRENT_TAG = ID_SIGN_OFF;*/
                         // Remove preferences from shared
                         SharedPreferences sharedPref = getSharedPreferences(
                                 "my_park_meter_pref", Context.MODE_PRIVATE);
@@ -539,4 +515,43 @@ public class MainActivity extends AppCompatActivity {
         else
             fab.hide();
     }*/
+
+    // Check if we have userId
+    public void checkIfWeHaveUserId(String newUserId) {
+        SharedPreferences sharedPref = getApplicationContext().
+                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+        String email = sharedPref.getString("email", "");
+        String userId = sharedPref.getString("userId", "");
+        Observable<CheckinMock> resultisRegisteredObservable = LoginRetrofitHelper.
+                Factory.createUpdateUserId(email, newUserId); // user
+
+        if (!newUserId.equals(userId)) {
+            resultisRegisteredObservable
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<CheckinMock>() {
+                @Override
+                public void onStart() {
+                    Log.d(TAG, "onStart: ");
+                }
+
+                @Override
+                public void onCompleted() {
+                    Log.d(TAG, "onCompleted: ");
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.d(TAG, "onError: " + e.getMessage());
+                    Toast.makeText(getApplicationContext(), "An error occurred.", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onNext(CheckinMock result) {
+                    Log.d(TAG, "new userId: " + result.isSuccess());
+                }
+            });
+        }
+    }
+
 }

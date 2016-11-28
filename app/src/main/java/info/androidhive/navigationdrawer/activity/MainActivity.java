@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         // One Signal subscription
         OneSignal.setSubscription(true);
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.DEBUG, OneSignal.LOG_LEVEL.NONE);
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
             public void idsAvailable(String newUserId, String registrationId) {

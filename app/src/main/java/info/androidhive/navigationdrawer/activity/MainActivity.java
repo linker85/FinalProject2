@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.stetho.Stetho;
 import com.onesignal.OneSignal;
 
 import info.androidhive.navigationdrawer.R;
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: MainActivity");
 
         // Stetho
-        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
 
         // Set current activity
         SharedPreferences sharedPref = getApplicationContext().
@@ -366,13 +365,24 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.id_sign_off:
                         // Remove preferences from shared
-                        SharedPreferences sharedPref = getSharedPreferences(
-                                "my_park_meter_pref", Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref   = getApplicationContext().
+                                getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                        String rem    = sharedPref.getString("rem", "0");
+                        String userId = sharedPref.getString("userId", "");
+                        String email  = sharedPref.getString("emailR", "");
+
+                        // Remove preferences from shared
                         final SharedPreferences.Editor editor = sharedPref.edit();
                         editor.clear();
+                        editor.putString("rem", rem);
+                        editor.putString("userId", userId);
+                        editor.putString("emailR", email);
+
                         editor.commit();
+
                         // No more notifications
                         OneSignal.setSubscription(false);
+
                         finish();
                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                         // clear activity stack
@@ -478,11 +488,20 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
+
+            SharedPreferences sharedPref   = getApplicationContext().
+                    getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+            String rem    = sharedPref.getString("rem", "0");
+            String userId = sharedPref.getString("userId", "");
+            String email  = sharedPref.getString("emailR", "");
+
             // Remove preferences from shared
-            SharedPreferences sharedPref = getSharedPreferences(
-                    "my_park_meter_pref", Context.MODE_PRIVATE);
             final SharedPreferences.Editor editor = sharedPref.edit();
             editor.clear();
+            editor.putString("rem", rem);
+            editor.putString("userId", userId);
+            editor.putString("emailR", email);
+
             editor.commit();
 
             // No more notifications

@@ -35,47 +35,50 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    // Glide image library
-    // Stepper
-    // Event bus
-
-    // For seek bar
-    // For snack bar
-    // Retrofit + RxJava
-    // Sugar
-    // Stheto -> remove
-
-    // Required for OneSignal, even if you have added FCM.
-
-    // Required for geotagging
-
-    // play-services-analytics is only needed when using 8.1.0 or older.
-    // compile 'com.google.android.gms:play-services-analytics:+'
-
-    // Discrete slider
-
+    // Support libraries
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    // Stepper
     compile 'org.codepond:wizardroid:1.3.1'
+
+    // Event bus
     compile 'org.greenrobot:eventbus:3.0.0'
+
+    // Butter Knife
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
+    // Glide
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.easing:library:1.0.1@aar'
+
+    // Retrofit
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    // Rx Java
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    // Sugar
     compile 'com.github.satyan:sugar:1.3.1'
-    compile 'com.facebook.stetho:stetho:1.4.1'
+
+    // Required for OneSignal, even if you have added FCM.
     compile 'com.onesignal:OneSignal:3.+@aar'
     compile 'com.google.android.gms:play-services-gcm:9.8.0'
+
+    // Required for geotagging
     compile 'com.google.android.gms:play-services-location:9.8.0'
-    compile 'com.github.lawloretienne:discreteslider:0.0.9'
     compile 'com.google.android.gms:play-services-maps:9.8.0'
+
+    // Discrete slider
+    compile 'com.github.lawloretienne:discreteslider:0.0.9'
+
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     testCompile 'junit:junit:4.12'
 }

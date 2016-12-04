@@ -50,8 +50,8 @@
     <!-- String for commons -->
     <string name="save">Save</string>
     <string name="hint_card_number">Card number</string>
-    <string name="hint_card_month">Month</string>
-    <string name="hint_card_year">Year</string>
+    <string name="hint_card_month">MM</string>
+    <string name="hint_card_year">YYYY</string>
     <string name="hint_card_cvv">CVV</string>
     <string name="scan">Scan</string>
     <string name="choose_how_long_you_want_to_stay">Choose how long you want to stay</string>

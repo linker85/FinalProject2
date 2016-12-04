@@ -2,6 +2,7 @@ package info.androidhive.navigationdrawer.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import butterknife.ButterKnife;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.models.Success;
 import info.androidhive.navigationdrawer.retrofit_helpers.SaveApiRetroFitHelper;
+import io.card.payment.CardIOActivity;
+import io.card.payment.CreditCard;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -47,6 +50,7 @@ public class RegPayFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG        = "RegPayFragmentTAG_";
+    private static final int MY_SCAN_REQUEST_CODE = 100;
 
     @BindView(R.id.input_card)
     public EditText inputCard;
@@ -66,9 +70,12 @@ public class RegPayFragment extends Fragment {
     public TextInputLayout inputLayoutCVV;
     @BindView(R.id.btn_register_card)
     public Button btn_register_card;
+    @BindView(R.id.btn_scan_card)
+    public Button btn_scan_card;
     @BindView(R.id.id_pay_status)
     public TextView payStatus;
 
+    private CreditCard scanResult;
     private boolean isAlreadyRegistered = false;
 
     // TODO: Rename and change types of parameters
@@ -158,6 +165,61 @@ public class RegPayFragment extends Fragment {
                 submitForm();
             }
         });
+        btn_scan_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent scanIntent = new Intent(getActivity(), CardIOActivity.class);
+
+                // customize these values to suit your needs.
+                // customize these values to suit your needs.
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, true); // default: false
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false); // default: false
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false); // default: false
+                scanIntent.putExtra(CardIOActivity.EXTRA_RESTRICT_POSTAL_CODE_TO_NUMERIC_ONLY, false); // default: false
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CARDHOLDER_NAME, false); // default: false
+
+                // hides the manual entry button
+                // if set, developers should provide their own manual entry mechanism in the app
+                scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, false); // default: false
+
+                // matches the theme of your application
+                scanIntent.putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME, false); // default: false
+
+                // MY_SCAN_REQUEST_CODE is arbitrary and is only used within this activity.
+                startActivityForResult(scanIntent, MY_SCAN_REQUEST_CODE);
+            }
+        });
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
+            scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
+
+            // Never log a raw card number. Avoid displaying it, but if necessary use getFormattedCardNumber()
+            inputCard.setText(scanResult.getRedactedCardNumber());
+
+            // Do something with the raw number, e.g.:
+            // myService.setCardNumber( scanResult.cardNumber );
+
+            if (scanResult.isExpiryValid()) {
+                inputYYYY.setText(String.valueOf(scanResult.expiryYear));
+                inputMM.setText(String.valueOf(scanResult.expiryMonth));
+            }
+
+            if (scanResult.cvv != null) {
+                // Never log or display a CVV
+                try {
+                    inputCVV.setText(scanResult.cvv);
+                } catch (Exception e) {e.printStackTrace();}
+            }
+        } else {
+            payStatus.setText("Scan was canceled.");
+        }
+
     }
 
     private Observable<Boolean> getIsAlreadyRegisteredObservable() {

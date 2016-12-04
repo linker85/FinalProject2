@@ -12,6 +12,15 @@
         android:paddingRight="20dp"
         android:paddingTop="60dp">
 
+        <Button
+            android:id="@+id/btn_scan_card"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/scan_card"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp"/>
+
         <TextView
             android:id="@+id/id_pay_status"
             android:layout_width="match_parent"

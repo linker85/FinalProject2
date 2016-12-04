@@ -79,6 +79,9 @@ dependencies {
     // Discrete slider
     compile 'com.github.lawloretienne:discreteslider:0.0.9'
 
+    // Card reader
+    compile 'io.card:android-sdk:5.4.2'
+
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     testCompile 'junit:junit:4.12'
 }

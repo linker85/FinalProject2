@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/mymapFragment"
-    tools:context="info.androidhive.navigationdrawer.fragment.MyMapFragment">
+    tools:context="info.androidhive.myparkmeter.fragment.MyMapFragment">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map2"

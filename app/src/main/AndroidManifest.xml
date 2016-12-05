@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="info.androidhive.navigationdrawer">
+    package="info.androidhive.myparkmeter">
 
     <!-- For the card reader -->
     <!-- Permission to vibrate - recommended, allows vibration feedback on scan -->
@@ -20,44 +20,37 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <application
-        android:name=".activity.MyApplication"
+        android:name="info.androidhive.myparkmeter.activity.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name="info.androidhive.myparkmeter.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.AboutUsActivity"
+            android:name="info.androidhive.myparkmeter.activity.AboutUsActivity"
             android:label="@string/activity_title_about_us" />
         <activity
-            android:name=".activity.PrivacyPolicyActivity"
+            android:name="info.androidhive.myparkmeter.activity.PrivacyPolicyActivity"
             android:label="@string/activity_title_privacy_policy" />
-        <activity android:name=".activity.MoreTimeActivity" />
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name="info.androidhive.myparkmeter.activity.MoreTimeActivity" />
+        <activity android:name="info.androidhive.myparkmeter.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignUpActivity" />
-        <activity android:name=".activity.MapActivity" />
-        <activity android:name=".activity.ForgotPasswordActivity" />
-        <!--<activity android:name=".activity.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>-->
+        <activity android:name="info.androidhive.myparkmeter.activity.SignUpActivity" />
+        <activity android:name="info.androidhive.myparkmeter.activity.MapActivity" />
+        <activity android:name="info.androidhive.myparkmeter.activity.ForgotPasswordActivity" />
 
         <service
-            android:name=".service.NotificationsService"
+            android:name="info.androidhive.myparkmeter.service.NotificationsService"
             android:exported="false" />
 
         <meta-data

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="info.androidhive.navigationdrawer.fragment.HomeFragment">
+    tools:context="info.androidhive.myparkmeter.fragment.HomeFragment">
 
     <Button
         android:id="@+id/scanner"

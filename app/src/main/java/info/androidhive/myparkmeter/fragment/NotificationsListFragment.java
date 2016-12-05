@@ -13,12 +13,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -72,7 +72,6 @@ public class NotificationsListFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(final UpdateMapEvent event) {
         // Do something!
-        Log.d(TAG, "onEventMainThread: " + event.coordinates);
         eventBus.post(new UpdateMapEvent2(event.coordinates, event.title, event.body));
     }
 
@@ -106,8 +105,8 @@ public class NotificationsListFragment extends Fragment {
         // Build the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(customView); // Set the view of the dialog to your custom layout
-        builder.setTitle("Select start and end date");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+        builder.setTitle(R.string.notifications_instructions);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startYear  = dpStartDate.getYear();
@@ -143,7 +142,6 @@ public class NotificationsListFragment extends Fragment {
                     startDayS = "" + startDay;
                 }
 
-                Log.d(TAG, "onClickDialogDate: " + endYear + "/" + endMonthS + "/" + endDay);
                 doOpenDate1.setText(startYear + "-" + startMonthS + "-" + startDayS + " 00:00:00");
                 doOpenDate2.setText(endYear + "-" + endMonthS + "-" + endDayS + " 23:59:59");
                 dialog.dismiss();
@@ -177,9 +175,6 @@ public class NotificationsListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Log.d(TAG, "onViewCreated: ");
-
-        //fab1 = (FloatingActionButton) view.findViewById(R.id.fab);
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,7 +185,7 @@ public class NotificationsListFragment extends Fragment {
     }
 
     public void doSearch(View view) {
-        Log.d(TAG, "doSearch: ");
+
     }
 
 
@@ -218,6 +213,9 @@ public class NotificationsListFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             // 4. set adapter
+            if (notificationArrayList == null || notificationArrayList.isEmpty()) {
+                Toast.makeText(getActivity(), R.string.no_notifications, Toast.LENGTH_LONG).show();
+            }
             notificationAdapter = new NotificationsAdapter(notificationArrayList, eventBus);
             notificationRecyclerView.setAdapter(notificationAdapter);
             notificationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

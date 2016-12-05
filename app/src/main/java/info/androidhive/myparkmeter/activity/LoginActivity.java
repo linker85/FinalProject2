@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -150,7 +149,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void doSignIn(View view) {
         boolean isValid = validateEmail() && validatePassword();
-        Log.d(TAG, "doSignIn: ");
         progressDialog = new ProgressDialog(this);
 
         if (isValid) {
@@ -169,19 +167,17 @@ public class LoginActivity extends AppCompatActivity {
                     .subscribe(new Subscriber<LoginResponse>() {
                         @Override
                         public void onStart() {
-                            Log.d(TAG, "onStart: ");
-                            progressDialog.setMessage("Loading...");
+                            progressDialog.setMessage(getString(R.string.loading));
                             progressDialog.show();
                         }
 
                         @Override
                         public void onCompleted() {
-                            Log.d(TAG, "onCompleted: ");
+
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.d(TAG, "onError: " + e.getMessage());
                             try {
                                 if (progressDialog.isShowing()) {
                                     progressDialog.dismiss();
@@ -194,7 +190,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(LoginResponse response) {
-                            Log.d(TAG, "onNext: ");
                             try {
                                 if (progressDialog.isShowing()) {
                                     progressDialog.dismiss();
@@ -231,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                                 startActivity(intent);
                             } else {
-                                errorMessageSignIn.setText("Invalid user or password");
+                                errorMessageSignIn.setText(R.string.invalid_user_pass);
                                 try{
                                     if (progressDialog.isShowing()) {
                                         progressDialog.dismiss();

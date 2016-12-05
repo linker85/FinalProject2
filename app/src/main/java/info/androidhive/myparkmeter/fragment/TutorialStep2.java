@@ -109,10 +109,10 @@ public class TutorialStep2 extends WizardStep {
 
         if (isExtend) {
             isCheckin = true;
-            finalMessage = "You´ve succesfully extend your checkin time.";
-            snap_bar.setText("For how long do you wish to extend your time?");
+            finalMessage = getString(R.string.success_extend_time);
+            snap_bar.setText(R.string.ask_extend_time);
         } else {
-            finalMessage = "You´ve succesfully checkin.";
+            finalMessage = getString(R.string.success_checkin);
         }
 
         if (!isCheckin) {
@@ -122,7 +122,7 @@ public class TutorialStep2 extends WizardStep {
             saveTime.setVisibility(View.INVISIBLE);
             tickMarkLabelsRelativeLayout1.setVisibility(View.INVISIBLE);
             tickMarkLabelsRelativeLayout2.setVisibility(View.INVISIBLE);
-            snap_bar.setText("You need to Check in before extending time.");
+            snap_bar.setText(R.string.checkin_validation);
         }
 
         return v;
@@ -149,12 +149,9 @@ public class TutorialStep2 extends WizardStep {
                 final int minutes = tickMarkTime1[selectionMin];
                 final int hours   = tickMarkTime2[selectionHr];
 
-                Log.d("TAG", "onPositionChangedMin: " + costLabels2[selectionHr]);
-                Log.d("TAG", "onPositionChangedHr: " + costLabels1[selectionMin]);
-
                 if (costLabels2[selectionHr] > 0 || costLabels1[selectionMin] > 0) {
 
-                    StringBuilder message = new StringBuilder("You have choosen ");
+                    StringBuilder message = new StringBuilder(getString(R.string.choosen));
                     double timeMinD = 0;
                     double timeHrD = 0;
 
@@ -165,19 +162,19 @@ public class TutorialStep2 extends WizardStep {
 
                     if (costLabels1[selectionMin] > 0) {
                         if (costLabels2[selectionHr] > 0) {
-                            message.append(" and ");
+                            message.append(getString(R.string.and));
                         }
                         message.append(tickMarkLabels1[selectionMin]);
                         timeMinD = costLabels1[selectionMin];
                     }
-                    message.append(", you have to pay: $" + (timeMinD + timeHrD));
+                    message.append(getString(R.string.pay_question) + (timeMinD + timeHrD));
                     totalToPay.setText(message);
 
                     final ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
                     Snackbar snackbar = Snackbar
-                            .make(relativeLayout, "Do you accept?", Snackbar.LENGTH_LONG)
-                            .setAction("Yes", new View.OnClickListener() {
+                            .make(relativeLayout, R.string.do_you_accept, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.yes, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
 
@@ -189,20 +186,18 @@ public class TutorialStep2 extends WizardStep {
                                             .subscribe(new Subscriber<Success>() {
                                                 @Override
                                                 public void onStart() {
-                                                    Log.d(TAG, "onStart: ");
-                                                    progressDialog.setMessage("Saving...");
+                                                    progressDialog.setMessage(getString(R.string.saving));
                                                     progressDialog.show();
                                                 }
 
                                                 @Override
                                                 public void onCompleted() {
-                                                    Log.d(TAG, "onCompleted: ");
                                                 }
 
                                                 @Override
                                                 public void onError(Throwable e) {
                                                     Log.d(TAG, "onError: " + e.getMessage());
-                                                    totalToPay.setText("An error ocurred, your time couldn´t be set.");
+                                                    totalToPay.setText(R.string.error_setting_time);
                                                     try {
                                                         if (progressDialog.isShowing()) {
                                                             progressDialog.dismiss();
@@ -224,7 +219,7 @@ public class TutorialStep2 extends WizardStep {
                                                         getActivity().finish();
                                                         startActivity(getActivity().getIntent());
                                                     } else {
-                                                        totalToPay.setText("An error ocurred, your time couldn´t be set.");
+                                                        totalToPay.setText(R.string.error_setting_time);
                                                     }
                                                     try {
                                                         if (progressDialog.isShowing()) {
@@ -241,7 +236,7 @@ public class TutorialStep2 extends WizardStep {
                     snackbar.show();
 
                 } else {
-                    totalToPay.setText("Select a time before saving.");
+                    totalToPay.setText(R.string.select_time_instruction);
                 }
             }
         });
@@ -320,7 +315,7 @@ public class TutorialStep2 extends WizardStep {
 
         int tickMarkLabelWidth = DisplayUtility.dp2px(getContext(), 40);
 
-        for(int i=0; i<tickMarkCount; i++) {
+        for(int i = 0; i < tickMarkCount; i++) {
             TextView tv = new TextView(getContext());
 
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
@@ -332,8 +327,6 @@ public class TutorialStep2 extends WizardStep {
                 tv.setTextColor(getResources().getColor(R.color.colorPrimary));
             else
                 tv.setTextColor(getResources().getColor(R.color.grey_400));
-
-//                    tv.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
 
             int left = discreteSliderBackdropLeftMargin + (int)firstTickMarkRadius + (i * interval) - (tickMarkLabelWidth/2);
 
@@ -373,8 +366,6 @@ public class TutorialStep2 extends WizardStep {
                 tv.setTextColor(getResources().getColor(R.color.colorPrimary));
             else
                 tv.setTextColor(getResources().getColor(R.color.grey_400));
-
-//                    tv.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
 
             int left = discreteSliderBackdropLeftMargin + (int)firstTickMarkRadius + (i * interval) - (tickMarkLabelWidth/2);
 

@@ -52,7 +52,7 @@ public class MoreTimeActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Extend time");
+        getSupportActionBar().setTitle(R.string.extend_time);
 
         mHandler = new Handler();
 
@@ -65,14 +65,13 @@ public class MoreTimeActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<CheckinMock>() {
                     @Override
                     public void onStart() {
-                        Log.d(TAG, "onStart: ");
-                        progressDialog.setMessage("Loading...");
+                        progressDialog.setMessage("" + R.string.loading);
                         progressDialog.show();
                     }
 
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted: ");
+
                     }
 
                     @Override

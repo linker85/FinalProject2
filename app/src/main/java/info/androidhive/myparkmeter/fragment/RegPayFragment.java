@@ -135,7 +135,7 @@ public class RegPayFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        payStatus.setText("An error ocurred while trying to register your car.");
+                        payStatus.setText(R.string.error_register_card);
                         payStatus.setVisibility(View.VISIBLE);
                     }
 
@@ -143,7 +143,7 @@ public class RegPayFragment extends Fragment {
                     public void onNext(Boolean aBoolean) {
                         isAlreadyRegistered = aBoolean;
                         if (isAlreadyRegistered) {
-                            payStatus.setText("Enter new card number to update payment method.");
+                            payStatus.setText(R.string.card_already_registered);
                             payStatus.setVisibility(View.VISIBLE);
                         } else {
                             payStatus.setText("");
@@ -208,7 +208,7 @@ public class RegPayFragment extends Fragment {
                 inputCVVV.setText(scanResult.cvv);
             }
         } else {
-            payStatus.setText("Scan was canceled.");
+            payStatus.setText(R.string.scan_canceled);
         }
 
     }
@@ -262,20 +262,19 @@ public class RegPayFragment extends Fragment {
                 .subscribe(new Subscriber<Success>() {
                     @Override
                     public void onStart() {
-                        Log.d(TAG, "onStart: ");
-                        progressDialog.setMessage("Loading...");
+                        progressDialog.setMessage("" + R.string.loading);
                         progressDialog.show();
                     }
 
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted: ");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, "onError: " + e.getMessage());
-                        payStatus.setText("Your card couldn´t be registered.");
+                        payStatus.setText(R.string.card_not_registered);
                         payStatus.setVisibility(View.VISIBLE);
                         try {
                             if (progressDialog.isShowing()) {
@@ -289,7 +288,6 @@ public class RegPayFragment extends Fragment {
 
                     @Override
                     public void onNext(Success success) {
-                        Log.d(TAG, "onNext: " + success.isSuccess());
                         if (success.isSuccess()) {
                             payStatus.setText("");
                             payStatus.setVisibility(View.INVISIBLE);
@@ -297,9 +295,9 @@ public class RegPayFragment extends Fragment {
                             inputMMV.setText("");
                             inputYYYYV.setText("");
                             inputCVVV.setText("");
-                            Toast.makeText(getView().getContext(), "Your card was registered", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getView().getContext(), R.string.card_registered, Toast.LENGTH_SHORT).show();
                         } else {
-                            payStatus.setText("Your card couldn´t be registered.");
+                            payStatus.setText(R.string.card_not_registered);
                             payStatus.setVisibility(View.VISIBLE);
                         }
                         try {
@@ -325,12 +323,6 @@ public class RegPayFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override

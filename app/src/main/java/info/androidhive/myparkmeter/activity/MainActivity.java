@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +20,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.stetho.Stetho;
 import com.onesignal.OneSignal;
 
 import info.androidhive.myparkmeter.R;
@@ -44,20 +44,12 @@ public class MainActivity extends AppCompatActivity {
     //private ImageView imgNavHeaderBg, imgProfile;
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
-    private FloatingActionButton fab;
-
-    // urls to load navigation header background image
-    // and profile image
-    //private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
-    //private static final String urlProfileImg  = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
     // tags used to attach the fragments
     private static final String ID_HOME          = "id_home";
-    private static final String ID_MORE_TIME     = "id_more_time";
-    private static final String ID_SIGN_OFF      = "id_sign_off";
     private static final String ID_NOTIFICATIONS = "id_notifications";
     private static final String ID_SETTINGS      = "id_settings";
     private static final String ID_REG_PAY       = "id_reg_pay";
@@ -79,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: MainActivity");
 
         // Stetho
-        //Stetho.initializeWithDefaults(this);
+        Stetho.initializeWithDefaults(this);
 
         // Set current activity
         SharedPreferences sharedPref = getApplicationContext().
@@ -90,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         // One Signal subscription
         OneSignal.setSubscription(true);
-        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.DEBUG, OneSignal.LOG_LEVEL.NONE);
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.NONE, OneSignal.LOG_LEVEL.NONE);
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
             public void idsAvailable(String newUserId, String registrationId) {
@@ -105,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //fab = (FloatingActionButton) findViewById(R.id.fab);
 
         // Navigation view header
         navHeader = navigationView.getHeaderView(0);
@@ -114,14 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
-
-        /*fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
         // load nav menu header data
         loadNavHeader();
@@ -143,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadNavHeader() {
         // name, website
-        txtWebsite.setText("Hello");
+        txtWebsite.setText(R.string.hello);
         try {
             SharedPreferences sharedPref = getApplicationContext().
                     getSharedPreferences("my_park_meter_pref",
@@ -152,22 +135,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //txtWebsite.setText("www.androidhive.info");
-
-        // loading header background image
-        /*Glide.with(this).load(urlNavHeaderBg)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgNavHeaderBg);*/
-
-        // Loading profile image
-        /*Glide.with(this).load(urlProfileImg)
-                .crossFade()
-                .thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgProfile);*/
 
         // showing dot next to notifications label
         navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
@@ -207,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 Bundle bundle = new Bundle();
                 if (navItemIndex == 0) {
-                    ////////////////////////////// Simulation of cheking if the user has checkin
                     SharedPreferences sharedPref = getApplicationContext().
                             getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
                     String email = sharedPref.getString("email", "");
@@ -220,18 +186,17 @@ public class MainActivity extends AppCompatActivity {
                             .subscribe(new Subscriber<CheckinMock>() {
                                 @Override
                                 public void onStart() {
-                                    Log.d(TAG, "onStart: ");
+
                                 }
 
                                 @Override
                                 public void onCompleted() {
-                                    Log.d(TAG, "onCompleted: ");
+
                                 }
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    Log.d(TAG, "onError: " + e.getMessage());
-                                    Toast.makeText(getApplicationContext(), "An error occurred.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
                                 }
 
                                 @Override
@@ -279,9 +244,6 @@ public class MainActivity extends AppCompatActivity {
             mHandler.post(mPendingRunnable);
         }
 
-        // show or hide the fab button
-        //toggleFab();
-
         //Closing drawer on item click
         drawer.closeDrawers();
 
@@ -301,10 +263,6 @@ public class MainActivity extends AppCompatActivity {
                 // home
                 HomeFragment homeFragment = new HomeFragment();
                 return homeFragment;
-            /*case 1:
-                // more time
-                PhotosFragment moreTimeFragment = new PhotosFragment();
-                return moreTimeFragment;*/
             case 2:
                 // register payment fragment
                 RegPayFragment registerPaymentFragment = new RegPayFragment();
@@ -317,9 +275,6 @@ public class MainActivity extends AppCompatActivity {
                 // settings fragment
                 SettingsFragment settingsFragment = new SettingsFragment();
                 return settingsFragment;
-            /*case 5:
-                // sign off
-                return new HomeFragment();*/
             default:
                 return new HomeFragment();
         }
@@ -528,14 +483,6 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    // show or hide the fab
-    /*private void toggleFab() {
-        if (navItemIndex == 0)
-            fab.show();
-        else
-            fab.hide();
-    }*/
-
     // Check if we have userId
     public void checkIfWeHaveUserId(String newUserId) {
         SharedPreferences sharedPref = getApplicationContext().
@@ -552,23 +499,22 @@ public class MainActivity extends AppCompatActivity {
             .subscribe(new Subscriber<CheckinMock>() {
                 @Override
                 public void onStart() {
-                    Log.d(TAG, "onStart: ");
+
                 }
 
                 @Override
                 public void onCompleted() {
-                    Log.d(TAG, "onCompleted: ");
+
                 }
 
                 @Override
                 public void onError(Throwable e) {
                     Log.d(TAG, "onError: " + e.getMessage());
-                    Toast.makeText(getApplicationContext(), "An error occurred.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onNext(CheckinMock result) {
-                    Log.d(TAG, "new userId: " + result.isSuccess());
                 }
             });
         }

@@ -24,7 +24,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Sign up");
+        getSupportActionBar().setTitle(R.string.sign_up);
 
         mHandler = new Handler();
 

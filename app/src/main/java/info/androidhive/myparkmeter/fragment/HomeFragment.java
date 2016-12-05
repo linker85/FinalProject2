@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,6 @@ public class HomeFragment extends WizardFragment {
     @Subscribe
     public void onEvent(UpdateStepperEvent event) {
         // your implementation
-        Log.d("TAG", "onEvent: ");
         nextButton.setEnabled(true);
     }
 
@@ -96,7 +94,6 @@ public class HomeFragment extends WizardFragment {
     public WizardFlow onSetup() {
         isCheckout = getArguments().getBoolean("isCheckout");
         bindDataFields(isCheckout);
-        Log.d("TAG", "onSetup: " + isCheckout);
         if (!isCheckout) {
             return new WizardFlow.Builder()
                     .addStep(TutorialStep1.class)           //Add your steps in the order you want them
@@ -135,7 +132,7 @@ public class HomeFragment extends WizardFragment {
     private void updateWizardControls() {
         previousButton.setEnabled(!wizard.isFirstStep());
         if (wizard.isLastStep()) {
-            nextButton.setText("Next");
+            nextButton.setText(R.string.next);
         } else {
             wizard.dispose();
         }

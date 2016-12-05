@@ -65,9 +65,9 @@ public class TutorialStep1 extends WizardStep {
         ButterKnife.bind(this, view);
 
         if (!isCheckout) {
-            scannerBTN.setText("Check in");
+            scannerBTN.setText(R.string.check_in);
         } else {
-            scannerBTN.setText("Check out");
+            scannerBTN.setText(R.string.check_out);
         }
 
         scannerBTN.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +80,9 @@ public class TutorialStep1 extends WizardStep {
                     startActivityForResult(intent, 0);
                 } catch (ActivityNotFoundException anfe) {
                     //on catch, show the download dialog
-                    showDialog(getActivity(), "No Scanner Found", "Download a scanner code activity?", "Yes", "No").show();
+                    showDialog(getActivity(), getString(R.string.no_scanner_found),
+                            getString(R.string.download_scanner), getString(R.string.yes),
+                            getString(R.string.no)).show();
                 }
             }
         });
@@ -95,9 +97,7 @@ public class TutorialStep1 extends WizardStep {
             if (resultCode == RESULT_OK) {
                 //get the extras that are returned from the intent
                 final String contents = intent.getStringExtra("SCAN_RESULT");
-                String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
-
-                Log.d("TAG", "onActivityResult: " + isCheckout);
+                //String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 
                 progressDialog = new ProgressDialog(getActivity());
 
@@ -127,8 +127,7 @@ public class TutorialStep1 extends WizardStep {
 
                             @Override
                             public void onStart() {
-                                Log.d(TAG, "onStart: ");
-                                progressDialog.setMessage("Loading...");
+                                progressDialog.setMessage("" + R.string.loading);
                                 progressDialog.show();
                             }
 
@@ -162,20 +161,20 @@ public class TutorialStep1 extends WizardStep {
                                         editor.putBoolean("checkin_temp", true);
                                         editor.putString("coordinates", contents);
                                         editor.commit();
-                                        toast = Toast.makeText(getActivity(), "Check in was succesful", Toast.LENGTH_LONG);
+                                        toast = Toast.makeText(getActivity(), R.string.check_in_successful, Toast.LENGTH_LONG);
                                         toast.show();
                                         EventBus.getDefault().post(new UpdateStepperEvent("continue"));
                                     } else {
                                         // Do checkout
                                         editor.remove("checkin_temp");
                                         editor.commit();
-                                        toast = Toast.makeText(getActivity(), "Check out was succesful", Toast.LENGTH_LONG);
+                                        toast = Toast.makeText(getActivity(), R.string.check_out_successful, Toast.LENGTH_LONG);
                                         toast.show();
                                         getActivity().finish();
                                         startActivity(getActivity().getIntent());
                                     }
                                 } else {
-                                    toast = Toast.makeText(getActivity(), "An error occured", Toast.LENGTH_LONG);
+                                    toast = Toast.makeText(getActivity(), R.string.error_occurred, Toast.LENGTH_LONG);
                                     toast.show();
                                     getActivity().finish();
                                     startActivity(getActivity().getIntent());

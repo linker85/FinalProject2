@@ -1,7 +1,6 @@
 package info.androidhive.myparkmeter.other;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +51,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter <NotificationsAda
         TextView textViewBody = holder.textViewBody;
         textViewBody.setText(notification.getBody());
 
-        //TextView textViewDate = holder.textViewDate;
-        //textViewDate.setText("" + notification.getDateS());
-
         holder.myNotification = notification;
     }
 
@@ -76,14 +72,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter <NotificationsAda
             super(itemView);
 
             // New instance of components inside the row
-            //textViewDate  = (TextView) itemView.findViewById(R.id.r_item_date);
             textViewTitle = (TextView) itemView.findViewById(R.id.r_item_title);
             textViewBody  = (TextView) itemView.findViewById(R.id.r_item_body);
             // Click individual items
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "currentPosition: " + myNotification.getCoordinates());
                     eventBus.post(new UpdateMapEvent(myNotification.getCoordinates(),
                             myNotification.getTitle(), myNotification.getBody()));
                 }

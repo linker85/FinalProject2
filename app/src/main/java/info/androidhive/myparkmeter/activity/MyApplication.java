@@ -36,7 +36,6 @@ public class MyApplication extends com.orm.SugarApp {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: MyApplication");
 
         // Logging set to help debug issues, remove before releasing your app.
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.DEBUG, OneSignal.LOG_LEVEL.WARN);
@@ -132,8 +131,6 @@ public class MyApplication extends com.orm.SugarApp {
 
                 Notification notification1 = new Notification();
 
-                Log.d(TAG, "notificationReceived: " + Thread.currentThread());
-
                 dateSend = data.optString("date_send", null);
 
                 email       = data.optString("email", null);
@@ -159,7 +156,6 @@ public class MyApplication extends com.orm.SugarApp {
                     intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }
-                Log.d(TAG, "notificationReceived2: " + Thread.currentThread());
             }
         }
     }

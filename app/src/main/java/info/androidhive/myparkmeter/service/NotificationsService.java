@@ -2,7 +2,6 @@ package info.androidhive.myparkmeter.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -38,8 +37,6 @@ public class NotificationsService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "onHandleIntent: ");
-
         String email = intent.getStringExtra("email");
         List<Notification> notificationsList = Notification.findWithQuery(
                 Notification.class, "SELECT * FROM NOTIFICATION WHERE EMAIL=?", email);

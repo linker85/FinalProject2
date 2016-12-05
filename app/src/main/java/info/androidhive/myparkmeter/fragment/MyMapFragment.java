@@ -4,7 +4,6 @@ package info.androidhive.myparkmeter.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +30,6 @@ public class MyMapFragment extends Fragment {
     private GoogleMap mMap;
     @BindView(R.id.map2)
     public MapView mMapView;
-    private EventBus eventBus = EventBus.getDefault();
 
     public MyMapFragment() {
         // Required empty public constructor
@@ -77,8 +73,6 @@ public class MyMapFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        Log.d(TAG, "coordinates: " + coordinates);
 
                         if (coordinates != null && !coordinates.equals("")) {
                             // For dropping a marker at a point on the Map

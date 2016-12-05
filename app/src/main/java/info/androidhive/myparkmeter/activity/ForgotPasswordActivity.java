@@ -24,7 +24,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Forgot password");
+        getSupportActionBar().setTitle(R.string.forgot_password);
 
         mHandler = new Handler();
 

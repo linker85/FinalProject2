@@ -130,7 +130,7 @@ public class SettingsFragment extends Fragment {
             inputLayoutPlate.setVisibility(View.GONE);
             inputLayoutPassword.setVisibility(View.GONE);
             inputLayoutName.setVisibility(View.GONE);
-            btn_register.setText("Get new password");
+            btn_register.setText(R.string.get_new_password);
         } else if (settingsFragment == 3) {
             // Is settings (option 3)
             SharedPreferences sharedPref = null;
@@ -213,20 +213,19 @@ public class SettingsFragment extends Fragment {
 
                     @Override
                     public void onStart() {
-                        Log.d(TAG, "onStart: ");
-                        progressDialog.setMessage("Loading...");
+                        progressDialog.setMessage("" + R.string.loading);
                         progressDialog.show();
                     }
 
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted: ");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, "onError: " + e.getMessage());
-                        settingStatus.setText("Your USER couldn´t be registered.");
+                        settingStatus.setText(R.string.user_not_registered);
                         settingStatus.setVisibility(View.VISIBLE);
                         try {
                             if (progressDialog.isShowing()) {
@@ -244,48 +243,6 @@ public class SettingsFragment extends Fragment {
                         if (success.getMensaje() != null) {
                             message = success.getMensaje();
                         }
-                        ////////////// Simulation of saving the user settings in the backend
-                        /*boolean successBack = false;
-                        String  message     = "Your user couldn´t be registered.";
-                        List<UserMock> userMocksList = UserMock.findWithQuery(UserMock.class, "SELECT * FROM USER_MOCK WHERE EMAIL = ?", inputEmail.getText().toString());
-                        if (settingsFragment == 1) { // Is signup
-                            if (userMocksList != null && !userMocksList.isEmpty()) {
-                                message     = "The email that you are trying to registered is already being used.";
-                                successBack = false;
-                            } else {
-                                // Add new user
-                                UserMock userMock = new UserMock();
-                                userMock.setEmail(inputEmail.getText().toString());
-                                userMock.setPassword(inputPassword.getText().toString());
-                                userMock.setName(inputName.getText().toString());
-                                userMock.setPlate("");
-                                userMock.save();
-                                successBack = true;
-                            }
-                        } else if (settingsFragment == 2) { // Is remember password
-                            // Email found and new password was send to user
-                            successBack = true;
-                        } else if (settingsFragment == 3) { // Is settings save
-                            if (userMocksList != null && !userMocksList.isEmpty()) { // Update user
-                                UserMock userMock = UserMock.findById(UserMock.class, userMocksList.get(0).getId());
-                                userMock.setEmail(inputEmail.getText().toString());
-                                userMock.setPassword(inputPassword.getText().toString());
-                                userMock.setName(inputName.getText().toString());
-                                userMock.setPlate(inputPlate.getText().toString());
-                                userMock.save();
-                                successBack = true;
-                            } else { // Add new user
-                                UserMock userMock = new UserMock();
-                                userMock.setEmail(inputEmail.getText().toString());
-                                userMock.setPassword(inputPassword.getText().toString());
-                                userMock.setName(inputName.getText().toString());
-                                userMock.setPlate(inputPlate.getText().toString());
-                                userMock.save();
-                                successBack = true;
-                            }
-                            settingStatus.setVisibility(View.INVISIBLE);
-                        }*/
-                        ////////////////////////////////////////////////////////////////////
                         if (success.isSuccess()) {
                             settingStatus.setText("");
                             settingStatus.setVisibility(View.INVISIBLE);
@@ -295,7 +252,7 @@ public class SettingsFragment extends Fragment {
                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                                 startActivity(intent);
                             } else if (settingsFragment == 2) { // Remember
-                                Toast.makeText(getView().getContext(), "An email was send with a new temporary password.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getView().getContext(), R.string.email_send, Toast.LENGTH_LONG).show();
                             } else if (settingsFragment == 3)  { // Settings
                                 SharedPreferences sharedPref = getActivity().getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
                                 final SharedPreferences.Editor editor = sharedPref.edit();
@@ -303,7 +260,7 @@ public class SettingsFragment extends Fragment {
                                 editor.putString("name", inputName.getText().toString());
                                 editor.putString("plate", inputPlate.getText().toString());
                                 editor.commit();
-                                Toast.makeText(getView().getContext(), "Your user settings have been updated.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getView().getContext(), R.string.settings_updated, Toast.LENGTH_LONG).show();
                             }
                         } else {
                             settingStatus.setText(message);
@@ -434,12 +391,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override

@@ -4,6 +4,14 @@
     android:layout_height="match_parent"
     tools:context="info.androidhive.myparkmeter.fragment.HomeFragment">
 
+    <TextView
+        android:id="@+id/msg_checkinout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp" />
+
     <Button
         android:id="@+id/scanner"
         android:layout_width="match_parent"

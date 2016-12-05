@@ -213,7 +213,7 @@ public class SettingsFragment extends Fragment {
 
                     @Override
                     public void onStart() {
-                        progressDialog.setMessage("" + R.string.loading);
+                        progressDialog.setMessage(getString(R.string.loading));
                         progressDialog.show();
                     }
 

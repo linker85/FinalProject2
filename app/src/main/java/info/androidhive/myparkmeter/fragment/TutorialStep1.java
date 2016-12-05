@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.codepond.wizardroid.WizardStep;
@@ -44,6 +45,8 @@ public class TutorialStep1 extends WizardStep {
     private static final String TAG = "TutorialStep1TAG_";
     @BindView(R.id.scanner)
     public Button scannerBTN;
+    @BindView(R.id.msg_checkinout)
+    public TextView msg;
     /**
      * Tell WizarDroid that these are context variables.
      * These values will be automatically bound to any field annotated with {@link ContextVariable}.
@@ -52,6 +55,8 @@ public class TutorialStep1 extends WizardStep {
      */
     @ContextVariable
     private boolean isCheckout;
+    @ContextVariable
+    private String  registeredMsg;
 
     //Wire the layout to the step
     public TutorialStep1() {
@@ -64,28 +69,34 @@ public class TutorialStep1 extends WizardStep {
         View view = inflater.inflate(R.layout.step_check_in, container, false);
         ButterKnife.bind(this, view);
 
-        if (!isCheckout) {
-            scannerBTN.setText(R.string.check_in);
-        } else {
-            scannerBTN.setText(R.string.check_out);
-        }
-
-        scannerBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    //start the scanning activity from the com.google.zxing.client.android.SCAN intent
-                    Intent intent = new Intent(ACTION_SCAN);
-                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-                    startActivityForResult(intent, 0);
-                } catch (ActivityNotFoundException anfe) {
-                    //on catch, show the download dialog
-                    showDialog(getActivity(), getString(R.string.no_scanner_found),
-                            getString(R.string.download_scanner), getString(R.string.yes),
-                            getString(R.string.no)).show();
-                }
+        if (registeredMsg == null || registeredMsg.equals("")) {
+            msg.setText("");
+            if (!isCheckout) {
+                scannerBTN.setText(R.string.check_in);
+            } else {
+                scannerBTN.setText(R.string.check_out);
             }
-        });
+
+            scannerBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        //start the scanning activity from the com.google.zxing.client.android.SCAN intent
+                        Intent intent = new Intent(ACTION_SCAN);
+                        intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                        startActivityForResult(intent, 0);
+                    } catch (ActivityNotFoundException anfe) {
+                        //on catch, show the download dialog
+                        showDialog(getActivity(), getString(R.string.no_scanner_found),
+                                getString(R.string.download_scanner), getString(R.string.yes),
+                                getString(R.string.no)).show();
+                    }
+                }
+            });
+        } else {
+            msg.setText(registeredMsg);
+            scannerBTN.setVisibility(View.GONE);
+        }
 
         return view;
     }
@@ -127,7 +138,7 @@ public class TutorialStep1 extends WizardStep {
 
                             @Override
                             public void onStart() {
-                                progressDialog.setMessage("" + R.string.loading);
+                                progressDialog.setMessage(getString(R.string.loading));
                                 progressDialog.show();
                             }
 

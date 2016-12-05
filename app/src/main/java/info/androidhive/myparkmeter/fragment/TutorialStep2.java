@@ -75,6 +75,8 @@ public class TutorialStep2 extends WizardStep {
     private boolean isCheckin;
     private boolean isExtend;
 
+    private String msg;
+
     private String finalMessage;
 
     //Wire the layout to the step
@@ -87,42 +89,53 @@ public class TutorialStep2 extends WizardStep {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.step_choose_time, container, false);
         ButterKnife.bind(this, v);
+        msg = getArguments().getString("msg");
+        if (msg == null || msg.equals("")) {
+            isExtend = getArguments().getBoolean("isExtend");
+            msg = getArguments().getString("msg");
 
-        isExtend = getArguments().getBoolean("isExtend");
+            SharedPreferences sharedPref = null;
+            try {
+                sharedPref = getActivity().
+                        getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
+                isCheckin = sharedPref.getBoolean("checkin_temp", false);
+                coordinates = sharedPref.getString("coordinates", "");
+                email = sharedPref.getString("email", "");
 
-        SharedPreferences sharedPref = null;
-        try {
-            sharedPref = getActivity().
-                    getSharedPreferences("my_park_meter_pref", Context.MODE_PRIVATE);
-            isCheckin   = sharedPref.getBoolean("checkin_temp", false);
-            coordinates = sharedPref.getString("coordinates", "");
-            email       = sharedPref.getString("email", "");
+                final SharedPreferences.Editor editor = sharedPref.edit();
+                editor.remove("hr");
+                editor.remove("min");
+                editor.commit();
 
-            final SharedPreferences.Editor editor = sharedPref.edit();
-            editor.remove("hr");
-            editor.remove("min");
-            editor.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            if (isExtend) {
+                isCheckin = true;
+                finalMessage = getString(R.string.success_extend_time);
+                snap_bar.setText(R.string.ask_extend_time);
+            } else {
+                finalMessage = getString(R.string.success_checkin);
+            }
 
-        if (isExtend) {
-            isCheckin = true;
-            finalMessage = getString(R.string.success_extend_time);
-            snap_bar.setText(R.string.ask_extend_time);
+            if (!isCheckin) {
+                totalToPay.setVisibility(View.INVISIBLE);
+                discreteSlider1.setVisibility(View.INVISIBLE);
+                discreteSlider2.setVisibility(View.INVISIBLE);
+                saveTime.setVisibility(View.INVISIBLE);
+                tickMarkLabelsRelativeLayout1.setVisibility(View.INVISIBLE);
+                tickMarkLabelsRelativeLayout2.setVisibility(View.INVISIBLE);
+                snap_bar.setText(R.string.checkin_validation);
+            }
         } else {
-            finalMessage = getString(R.string.success_checkin);
-        }
-
-        if (!isCheckin) {
             totalToPay.setVisibility(View.INVISIBLE);
             discreteSlider1.setVisibility(View.INVISIBLE);
             discreteSlider2.setVisibility(View.INVISIBLE);
             saveTime.setVisibility(View.INVISIBLE);
             tickMarkLabelsRelativeLayout1.setVisibility(View.INVISIBLE);
             tickMarkLabelsRelativeLayout2.setVisibility(View.INVISIBLE);
-            snap_bar.setText(R.string.checkin_validation);
+            snap_bar.setText(msg);
         }
 
         return v;

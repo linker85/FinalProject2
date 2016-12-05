@@ -86,7 +86,7 @@
     <string name="card_not_registered">Your card couldn´t be registered.</string>
     <string name="card_registered">Your card was registered</string>
     <string name="get_new_password">Get a new password</string>
-    <string name="user_not_registered">Your USER couldn´t be registered.</string>
+    <string name="user_not_registered">Your user couldn´t be registered.</string>
     <string name="email_send">An email was send with a new temporary password.</string>
     <string name="settings_updated">Your user settings have been updated.</string>
     <string name="check_out">Check out</string>

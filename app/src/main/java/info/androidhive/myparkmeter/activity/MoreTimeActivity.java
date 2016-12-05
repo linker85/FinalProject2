@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.onesignal.OneSignal;
 
@@ -65,7 +64,7 @@ public class MoreTimeActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<CheckinMock>() {
                     @Override
                     public void onStart() {
-                        progressDialog.setMessage("" + R.string.loading);
+                        progressDialog.setMessage(getString(R.string.loading));
                         progressDialog.show();
                     }
 
@@ -85,17 +84,17 @@ public class MoreTimeActivity extends AppCompatActivity {
                         } catch(Exception exception) {
                             exception.printStackTrace();
                         }
-                        loadStep2Fragment(false);
+                        loadStep2Fragment(false, "Error");
                     }
 
                     @Override
                     public void onNext(CheckinMock result) {
                         boolean isExtend = false;
                         if (!result.isSuccess()) {
-                            Toast.makeText(getApplicationContext(), result.getMensaje(), Toast.LENGTH_LONG).show();
+                            loadStep2Fragment(isExtend, result.getMensaje());
                         } else {
                             isExtend = (result.getResult() == 1);
-                            loadStep2Fragment(isExtend);
+                            loadStep2Fragment(isExtend, "");
                         }
                         try {
                             if (progressDialog.isShowing()) {
@@ -116,7 +115,7 @@ public class MoreTimeActivity extends AppCompatActivity {
      * It also takes care of other things like changing the toolbar title, hiding / showing fab,
      * invalidating the options menu so that new menu can be loaded for different fragment.
      */
-    private void loadStep2Fragment(final boolean isExtended) {
+    private void loadStep2Fragment(final boolean isExtended, final String msg) {
         // Sometimes, when fragment has huge data, screen seems hanging
         // when switching between navigation menus
         // So using runnable, the fragment is loaded with cross fade effect
@@ -127,6 +126,7 @@ public class MoreTimeActivity extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isExtend", isExtended);
+                bundle.putString("msg", msg);
 
                 // update the main content by replacing fragments
                 Fragment fragment = new TutorialStep2();

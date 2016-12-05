@@ -38,6 +38,8 @@ public class HomeFragment extends WizardFragment {
      */
     @ContextVariable
     private boolean isCheckout;
+    @ContextVariable
+    private String  registeredMsg;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -92,8 +94,9 @@ public class HomeFragment extends WizardFragment {
     //using WizardFlow.Builder as shown in this example
     @Override
     public WizardFlow onSetup() {
-        isCheckout = getArguments().getBoolean("isCheckout");
-        bindDataFields(isCheckout);
+        isCheckout    = getArguments().getBoolean("isCheckout");
+        registeredMsg = getArguments().getString("registeredMsg");
+        bindDataFields(isCheckout, registeredMsg);
         if (!isCheckout) {
             return new WizardFlow.Builder()
                     .addStep(TutorialStep1.class)           //Add your steps in the order you want them
@@ -107,10 +110,11 @@ public class HomeFragment extends WizardFragment {
         //to createSave the wizard flow.
     }
 
-    private void bindDataFields(boolean isCheckout) {
+    private void bindDataFields(boolean isCheckout, String registeredMsg) {
         //The values of these fields will be automatically stored in the wizard context
         //and will be populated in the next steps only if the same field names are used.
-        this.isCheckout = isCheckout;
+        this.isCheckout    = isCheckout;
+        this.registeredMsg = registeredMsg;
     }
 
     @Override

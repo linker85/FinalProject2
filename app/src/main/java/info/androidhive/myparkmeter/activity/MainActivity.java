@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onError(Throwable e) {
+                                    Log.d(TAG, "***onError: " + e.getMessage());
                                     Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
                                 }
 
@@ -203,11 +204,24 @@ public class MainActivity extends AppCompatActivity {
                                 public void onNext(CheckinMock result) {
                                     boolean isCheckout = false;
                                     if (!result.isSuccess()) {
-                                        Toast.makeText(getApplicationContext(), result.getMensaje(), Toast.LENGTH_LONG).show();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putBoolean("isCheckout", isCheckout);
+                                        bundle.putString("registeredMsg", result.getMensaje());
+                                        // update the main content by replacing fragments
+                                        Fragment fragment = getHomeFragment();
+                                        if (navItemIndex == 0) {
+                                            fragment.setArguments(bundle);
+                                        }
+                                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                                android.R.anim.fade_out);
+                                        fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+                                        fragmentTransaction.commitAllowingStateLoss();
                                     } else {
                                         Bundle bundle = new Bundle();
                                         isCheckout = (result.getResult() == 1);
                                         bundle.putBoolean("isCheckout", isCheckout);
+                                        bundle.putString("registeredMsg", "");
                                         // update the main content by replacing fragments
                                         Fragment fragment = getHomeFragment();
                                         if (navItemIndex == 0) {
@@ -509,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Throwable e) {
-                    Log.d(TAG, "onError: " + e.getMessage());
+                    Log.d(TAG, ">>>onError: " + e.getMessage());
                     Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
                 }
 

@@ -262,7 +262,7 @@ public class RegPayFragment extends Fragment {
                 .subscribe(new Subscriber<Success>() {
                     @Override
                     public void onStart() {
-                        progressDialog.setMessage("" + R.string.loading);
+                        progressDialog.setMessage(getString(R.string.loading));
                         progressDialog.show();
                     }
 

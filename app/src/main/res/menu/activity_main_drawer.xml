@@ -8,11 +8,11 @@
             android:title="@string/nav_home" />
         <item
             android:id="@+id/id_more_time"
-            android:icon="@drawable/ic_photo_library_black_24dp"
+            android:icon="@drawable/ic_alarm_add_black_24dp"
             android:title="@string/nav_more_time" />
         <item
             android:id="@+id/id_reg_pay"
-            android:icon="@drawable/ic_photo_library_black_24dp"
+            android:icon="@drawable/ic_credit_card_black_24dp"
             android:title="@string/nav_reg_pay" />
         <item
             android:id="@+id/id_notifications"
@@ -24,7 +24,7 @@
             android:title="@string/nav_settings" />
         <item
             android:id="@+id/id_sign_off"
-            android:icon="@drawable/ic_local_movies_black_24dp"
+            android:icon="@drawable/ic_play_for_work_black_24dp"
             android:title="@string/nav_sign_off" />
     </group>
 

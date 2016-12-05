@@ -12,38 +12,48 @@
         android:paddingRight="20dp"
         android:paddingTop="60dp">
 
-        <Button
-            android:id="@+id/btn_scan_card"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/scan_card"
-            android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="10dp"/>
-
         <TextView
             android:id="@+id/id_pay_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:nextFocusUp="@+id/input_mm"
-                android:nextFocusLeft="@+id/input_mm"
-                android:nextFocusRight="@+id/input_mm"
-                android:nextFocusDown="@+id/input_mm"
-                android:id="@+id/input_card"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_card_number"
+                        android:layout_marginBottom="10dp"
+                        android:inputType="number"
+                        android:maxLength="16"
+                        android:maxLines="1"
+                        android:text="@string/card_number"/>
+                    <TextView
+                        android:nextFocusUp="@+id/input_mm"
+                        android:nextFocusLeft="@+id/input_mm"
+                        android:nextFocusRight="@+id/input_mm"
+                        android:nextFocusDown="@+id/input_mm"
+                        android:id="@+id/input_cardV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="16"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+            <ImageView
+                android:id="@+id/btn_scan_card"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_card_number"
-                android:inputType="number"
-                android:maxLength="10"
-                android:maxLines="1" />
-        </android.support.design.widget.TextInputLayout>
+                android:paddingTop="20dp"
+                android:src="@drawable/ic_credit_card_black_24dp"/>
+        </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
@@ -58,17 +68,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-
-                    <EditText
+                    <TextView
                         android:nextFocusUp="@+id/input_yyyy"
                         android:nextFocusLeft="@+id/input_yyyy"
                         android:nextFocusRight="@+id/input_yyyy"
                         android:nextFocusDown="@+id/input_yyyy"
-                        android:id="@+id/input_mm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_card_month"
+                        android:layout_marginBottom="10dp"
                         android:inputType="number"
+                        android:maxLength="2"
+                        android:maxLines="1"/>
+                    <TextView
+                        android:nextFocusUp="@+id/input_yyyy"
+                        android:nextFocusLeft="@+id/input_yyyy"
+                        android:nextFocusRight="@+id/input_yyyy"
+                        android:nextFocusDown="@+id/input_yyyy"
+                        android:id="@+id/input_mmV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:maxLength="2"
                         android:maxLines="1"/>
                 </android.support.design.widget.TextInputLayout>
@@ -79,17 +98,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-
-                    <EditText
+                    <TextView
                         android:nextFocusUp="@+id/input_cvv"
                         android:nextFocusLeft="@+id/input_cvv"
                         android:nextFocusRight="@+id/input_cvv"
                         android:nextFocusDown="@+id/input_cvv"
-                        android:id="@+id/input_yyyy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_card_year"
+                        android:layout_marginBottom="10dp"
                         android:inputType="number"
+                        android:maxLength="4"
+                        android:maxLines="1" />
+                    <TextView
+                        android:nextFocusUp="@+id/input_cvv"
+                        android:nextFocusLeft="@+id/input_cvv"
+                        android:nextFocusRight="@+id/input_cvv"
+                        android:nextFocusDown="@+id/input_cvv"
+                        android:id="@+id/input_yyyyV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:maxLength="4"
                         android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
@@ -99,13 +127,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-
-                    <EditText
-                        android:id="@+id/input_cvv"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_card_cvv"
+                        android:layout_marginBottom="10dp"
                         android:inputType="number"
+                        android:maxLength="3"
+                        android:maxLines="1" />
+                    <TextView
+                        android:id="@+id/input_cvvV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:maxLength="3"
                         android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>

@@ -69,4 +69,5 @@
     <string name="hint_plate">Plate</string>
     <string name="forgot">Forgot password</string>
     <string name="scan_card">Scan card</string>
+    <string name="card_number">Card number</string>
 </resources>

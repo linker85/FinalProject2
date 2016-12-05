@@ -9,16 +9,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,14 +48,14 @@ public class RegPayFragment extends Fragment {
     private static final String TAG        = "RegPayFragmentTAG_";
     private static final int MY_SCAN_REQUEST_CODE = 100;
 
-    @BindView(R.id.input_card)
-    public EditText inputCard;
-    @BindView(R.id.input_mm)
-    public EditText inputMM;
-    @BindView(R.id.input_yyyy)
-    public EditText inputYYYY;
-    @BindView(R.id.input_cvv)
-    public EditText inputCVV;
+    @BindView(R.id.input_cardV)
+    public TextView inputCardV;
+    @BindView(R.id.input_mmV)
+    public TextView inputMMV;
+    @BindView(R.id.input_yyyyV)
+    public TextView inputYYYYV;
+    @BindView(R.id.input_cvvV)
+    public TextView inputCVVV;
     @BindView(R.id.input_layout_card)
     public TextInputLayout inputLayoutCard;
     @BindView(R.id.input_layout_mm)
@@ -71,7 +67,7 @@ public class RegPayFragment extends Fragment {
     @BindView(R.id.btn_register_card)
     public Button btn_register_card;
     @BindView(R.id.btn_scan_card)
-    public Button btn_scan_card;
+    public ImageView btn_scan_card;
     @BindView(R.id.id_pay_status)
     public TextView payStatus;
 
@@ -128,8 +124,6 @@ public class RegPayFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        inputCard.addTextChangedListener(new RegPayFragment.MyTextWatcher(inputCard));
-
         getIsAlreadyRegisteredObservable()
                 .subscribeOn(Schedulers.io()) // does the work on the io thread
                 .observeOn(AndroidSchedulers.mainThread()) // returns result to the main thread
@@ -171,12 +165,11 @@ public class RegPayFragment extends Fragment {
                 Intent scanIntent = new Intent(getActivity(), CardIOActivity.class);
 
                 // customize these values to suit your needs.
-                // customize these values to suit your needs.
                 scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, true); // default: false
-                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false); // default: false
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, true); // default: false
                 scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false); // default: false
-                scanIntent.putExtra(CardIOActivity.EXTRA_RESTRICT_POSTAL_CODE_TO_NUMERIC_ONLY, false); // default: false
-                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CARDHOLDER_NAME, false); // default: false
+                scanIntent.putExtra(CardIOActivity.EXTRA_RESTRICT_POSTAL_CODE_TO_NUMERIC_ONLY, true); // default: false
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CARDHOLDER_NAME, true); // default: false
 
                 // hides the manual entry button
                 // if set, developers should provide their own manual entry mechanism in the app
@@ -200,21 +193,19 @@ public class RegPayFragment extends Fragment {
             scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
 
             // Never log a raw card number. Avoid displaying it, but if necessary use getFormattedCardNumber()
-            inputCard.setText(scanResult.getRedactedCardNumber());
+            inputCardV.setText(scanResult.getRedactedCardNumber());
 
             // Do something with the raw number, e.g.:
             // myService.setCardNumber( scanResult.cardNumber );
 
             if (scanResult.isExpiryValid()) {
-                inputYYYY.setText(String.valueOf(scanResult.expiryYear));
-                inputMM.setText(String.valueOf(scanResult.expiryMonth));
+                inputYYYYV.setText(String.valueOf(scanResult.expiryYear));
+                inputMMV.setText(String.valueOf(scanResult.expiryMonth));
             }
 
             if (scanResult.cvv != null) {
                 // Never log or display a CVV
-                try {
-                    inputCVV.setText(scanResult.cvv);
-                } catch (Exception e) {e.printStackTrace();}
+                inputCVVV.setText(scanResult.cvv);
             }
         } else {
             payStatus.setText("Scan was canceled.");
@@ -251,30 +242,7 @@ public class RegPayFragment extends Fragment {
      * Validating form
      */
     private void submitForm() {
-        boolean exito = false;
-
         progressDialog = new ProgressDialog(getActivity());
-
-        exito = !validateCard();
-        Log.d("TAG", "!validateCard: " + exito);
-        if (exito) {
-            return;
-        }
-        exito = !validateMonth();
-        Log.d("TAG", "!validateMonth: " + exito);
-        if (exito) {
-            return;
-        }
-        exito = !validateYear();
-        Log.d("TAG", "!validateYear: " + exito);
-        if (exito) {
-            return;
-        }
-        exito = !validateCvv();
-        Log.d("TAG", "!validateCvv: " + exito);
-        if (exito) {
-            return;
-        }
 
         SharedPreferences sharedPref = null;
         String email = "";
@@ -325,10 +293,10 @@ public class RegPayFragment extends Fragment {
                         if (success.isSuccess()) {
                             payStatus.setText("");
                             payStatus.setVisibility(View.INVISIBLE);
-                            inputCard.setText("");
-                            inputMM.setText("");
-                            inputYYYY.setText("");
-                            inputCVV.setText("");
+                            inputCardV.setText("");
+                            inputMMV.setText("");
+                            inputYYYYV.setText("");
+                            inputCVVV.setText("");
                             Toast.makeText(getView().getContext(), "Your card was registered", Toast.LENGTH_SHORT).show();
                         } else {
                             payStatus.setText("Your card couldn´t be registered.");
@@ -345,96 +313,6 @@ public class RegPayFragment extends Fragment {
                     }
                 });
 
-    }
-
-    private boolean validateCard() {
-        if (inputCard.getText().toString().trim().isEmpty()) {
-            inputLayoutCard.setError(getString(R.string.hint_register));
-            requestFocus(inputCard);
-            return false;
-        } else {
-            inputLayoutCard.setErrorEnabled(false);
-            return true;
-        }
-    }
-    private boolean validateMonth() {
-        if (inputMM.getText().toString().trim().isEmpty()) {
-            inputLayoutMM.setError(getString(R.string.hint_month));
-            requestFocus(inputMM);
-            return false;
-        } else {
-            int month = Integer.parseInt(inputMM.getText().toString());
-            if (month >= 1 && month <= 12) {
-                inputLayoutMM.setErrorEnabled(false);
-                return true;
-            } else {
-                inputLayoutMM.setError(getString(R.string.hint_month));
-                requestFocus(inputMM);
-                return false;
-            }
-        }
-    }
-    private boolean validateYear() {
-        inputLayoutYYYY.setErrorEnabled(false);
-        if (inputYYYY.getText().toString().trim().isEmpty()) {
-            inputLayoutYYYY.setError(getString(R.string.hint_year));
-            requestFocus(inputYYYY);
-            return false;
-        } else {
-            int year = Integer.parseInt(inputYYYY.getText().toString());
-            if (year >= 2000 && year <= 2040) {
-                return true;
-            } else {
-                inputLayoutYYYY.setError(getString(R.string.hint_year));
-                requestFocus(inputYYYY);
-                return false;
-            }
-        }
-    }
-    private boolean validateCvv() {
-        if (inputCVV.getText().toString().trim().isEmpty()) {
-            inputLayoutCVV.setError(getString(R.string.hint_cvv));
-            requestFocus(inputCVV);
-            return false;
-        } else {
-            inputLayoutCVV.setErrorEnabled(false);
-            return true;
-        }
-    }
-
-    private static boolean isValidEmail(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private void requestFocus(View view) {
-        if (view.requestFocus()) {
-            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
-    }
-
-    private class MyTextWatcher implements TextWatcher {
-
-        private View view;
-
-        private MyTextWatcher(View view) {
-            this.view = view;
-        }
-
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        public void afterTextChanged(Editable editable) {
-            payStatus.setText("");
-            payStatus.setVisibility(View.INVISIBLE);
-            switch (view.getId()) {
-                case R.id.input_name:
-                    validateCard();
-                    break;
-            }
-        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
